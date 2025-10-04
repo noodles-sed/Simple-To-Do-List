@@ -4,6 +4,8 @@ A clean, responsive, and lightweight to-do list application built with **HTML**,
 
 ---
 
+### NOTE: Make sure to add your profile details to contributors.json in [Quiver 2025](https://github.com/noodles-sed/hacktober-base)
+
 ## 🚀 Features
 
 - ✅ **Add Tasks**  
