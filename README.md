@@ -40,5 +40,5 @@ A clean, responsive, and lightweight to-do list application built with **HTML**,
 
 1. Clone or download this repository:
    ```bash
-   git clone https://github.com/your-username/todo-list.git
+   git clone https://github.com/mangosain/Simple-To-Do-List.git
    ```
