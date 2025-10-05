@@ -202,6 +202,25 @@
       .theme-transition {
         transition: all 0.3s ease-in-out;
       }
+      /* Body backgrounds with gradients for each theme */
+body.theme-blue {
+  background: linear-gradient(135deg, #93c5fd, #3b82f6); /* light blue → blue */
+}
+body.theme-green {
+  background: linear-gradient(135deg, #a7f3d0, #10b981); /* light green → green */
+}
+body.theme-purple {
+  background: linear-gradient(135deg, #ddd6fe, #8b5cf6); /* light purple → purple */
+}
+body.theme-dark {
+  background: linear-gradient(135deg, #374151, #1f2937); /* dark grey → darker grey */
+}
+
+/* Smooth transition for theme change */
+body {
+  transition: background 0.5s ease-in-out;
+}
+
     </style>
   </head>
   <body class="theme-blue bg-gray-100 flex items-center justify-center min-h-screen theme-transition">
