@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To-Do List</title>
+    <title> To-Do List</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for a nice font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <!-- Flatpickr for date selection -->
@@ -20,67 +20,233 @@
       /* Custom styles */
       body {
         font-family: "Inter", sans-serif;
+        transition: all 0.3s ease-in-out;
       }
+      
+      /* Color Themes */
+      .theme-blue {
+        --primary-color: #3b82f6;
+        --primary-hover: #2563eb;
+        --bg-color: #f3f4f6;
+        --card-bg: #ffffff;
+        --text-color: #1f2937;
+        --task-bg: #f9fafb;
+      }
+      
+      .theme-green {
+        --primary-color: #10b981;
+        --primary-hover: #059669;
+        --bg-color: #ecfdf5;
+        --card-bg: #ffffff;
+        --text-color: #064e3b;
+        --task-bg: #f0fdf4;
+      }
+      
+      .theme-purple {
+        --primary-color: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --bg-color: #faf5ff;
+        --card-bg: #ffffff;
+        --text-color: #5b21b6;
+        --task-bg: #faf5ff;
+      }
+      
+      .theme-dark {
+        --primary-color: #f59e0b;
+        --primary-hover: #d97706;
+        --bg-color: #1f2937;
+        --card-bg: #374151;
+        --text-color: #f9fafb;
+        --task-bg: #4b5563;
+      }
+      
+      /* Apply theme variables */
+      .theme-blue body {
+        background-color: var(--bg-color);
+      }
+      
+      .theme-blue .card {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+      }
+      
+      .theme-blue .task-item {
+        background-color: var(--task-bg);
+      }
+      
+      .theme-blue .btn-primary {
+        background-color: var(--primary-color);
+      }
+      
+      .theme-blue .btn-primary:hover {
+        background-color: var(--primary-hover);
+      }
+
       /* Style for completed tasks */
       .completed {
         text-decoration: line-through;
         color: #9ca3af; /* gray-400 */
       }
-      /* Simple transition for list items */
-      li {
-        transition: background-color 0.2s ease-in-out;
+      
+      /* Animation classes */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
+      
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(-100%);
+        }
+      }
+      
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      
+      @keyframes bounce {
+        0%, 20%, 53%, 80%, 100% {
+          transform: translate3d(0,0,0);
+        }
+        40%, 43% {
+          transform: translate3d(0, -8px, 0);
+        }
+        70% {
+          transform: translate3d(0, -4px, 0);
+        }
+        90% {
+          transform: translate3d(0, -2px, 0);
+        }
+      }
+      
+      .task-enter {
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      .task-exit {
+        animation: fadeOut 0.3s ease-out;
+      }
+      
+      .pulse-animation {
+        animation: pulse 0.5s ease-in-out;
+      }
+      
+      .bounce-animation {
+        animation: bounce 0.6s ease-in-out;
+      }
+      
+      /* Progress bar styles */
+      .progress-bar {
+        height: 8px;
+        border-radius: 4px;
+        background-color: #e5e7eb;
+        overflow: hidden;
+        transition: width 0.5s ease-in-out;
+      }
+      
+      .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.5s ease-in-out;
+      }
+      
       /* Priority badge styles */
       .priority-low {
-        background-color: #d1fae5; /* green-100 */
-        color: #065f46; /* green-800 */
+        background-color: #d1fae5;
+        color: #065f46;
       }
       .priority-medium {
-        background-color: #fef3c7; /* yellow-100 */
-        color: #92400e; /* yellow-800 */
+        background-color: #fef3c7;
+        color: #92400e;
       }
       .priority-high {
-        background-color: #fee2e2; /* red-100 */
-        color: #991b1b; /* red-800 */
+        background-color: #fee2e2;
+        color: #991b1b;
       }
+      
       /* Category badge styles */
       .category-personal {
-        background-color: #dbeafe; /* blue-100 */
-        color: #1e40af; /* blue-800 */
+        background-color: #dbeafe;
+        color: #1e40af;
       }
       .category-work {
-        background-color: #f3e8ff; /* purple-100 */
-        color: #6b21a8; /* purple-800 */
+        background-color: #f3e8ff;
+        color: #6b21a8;
       }
       .category-shopping {
-        background-color: #fce7f3; /* pink-100 */
-        color: #9d174d; /* pink-800 */
+        background-color: #fce7f3;
+        color: #9d174d;
       }
       .category-health {
-        background-color: #dcfce7; /* green-100 */
-        color: #166534; /* green-800 */
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      
+      /* Theme transition */
+      .theme-transition {
+        transition: all 0.3s ease-in-out;
       }
     </style>
   </head>
-  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 p-6">
-      <!-- Header -->
-      <div class="flex items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 flex-grow">To-Do List</h1>
-        <svg
-          class="w-8 h-8 text-blue-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-          ></path>
-        </svg>
+  <body class="theme-blue bg-gray-100 flex items-center justify-center min-h-screen theme-transition">
+    <div class="card bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 p-6 theme-transition">
+      <!-- Header with Theme Selector -->
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-gray-800"> To-Do List</h1>
+        <div class="flex items-center gap-4">
+          <!-- Progress Stats -->
+          <div class="hidden md:flex flex-col items-end">
+            <div class="text-sm text-gray-600">
+              <span id="completedCount">0</span> of <span id="totalCount">0</span> tasks completed
+            </div>
+            <div class="w-32 progress-bar mt-1">
+              <div id="progressFill" class="progress-fill bg-blue-500" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <!-- Theme Selector -->
+          <div class="relative">
+            <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition">
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+              </svg>
+            </button>
+            <div id="themeDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">
+              <button data-theme="blue" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <div class="w-4 h-4 rounded-full bg-blue-500 mr-3"></div>
+                Blue Theme
+              </button>
+              <button data-theme="green" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <div class="w-4 h-4 rounded-full bg-green-500 mr-3"></div>
+                Green Theme
+              </button>
+              <button data-theme="purple" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <div class="w-4 h-4 rounded-full bg-purple-500 mr-3"></div>
+                Purple Theme
+              </button>
+              <button data-theme="dark" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <div class="w-4 h-4 rounded-full bg-yellow-500 mr-3"></div>
+                Dark Theme
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Input Section -->
@@ -94,9 +260,9 @@
           />
           <button
             id="addTaskBtn"
-            class="bg-blue-500 text-white font-semibold px-5 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition shadow-md hover:shadow-lg"
+            class="btn-primary bg-blue-500 text-white font-semibold px-5 py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition shadow-md hover:shadow-lg bounce-animation"
           >
-            Add
+            Add Task
           </button>
         </div>
         
@@ -105,7 +271,7 @@
           <!-- Category Selection -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <select id="categorySelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="categorySelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
               <option value="personal">Personal</option>
               <option value="work">Work</option>
               <option value="shopping">Shopping</option>
@@ -116,7 +282,7 @@
           <!-- Priority Selection -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-            <select id="prioritySelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="prioritySelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
               <option value="high">High</option>
@@ -129,10 +295,21 @@
             <input
               type="text"
               id="dueDateInput"
-              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="Select date"
             />
           </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar (Mobile) -->
+      <div class="md:hidden mb-6">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm text-gray-600">Progress</span>
+          <span id="progressText" class="text-sm font-medium">0%</span>
+        </div>
+        <div class="w-full progress-bar">
+          <div id="mobileProgressFill" class="progress-fill bg-blue-500" style="width: 0%"></div>
         </div>
       </div>
 
@@ -141,6 +318,14 @@
         <ul id="taskList" class="space-y-3">
           <!-- Tasks will be dynamically added here -->
         </ul>
+        
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-12 hidden">
+          <svg class="w-24 h-24 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <p class="text-gray-500 text-lg">No tasks yet. Add one above!</p>
+        </div>
       </div>
     </div>
 
@@ -152,6 +337,14 @@
       const categorySelect = document.getElementById("categorySelect");
       const prioritySelect = document.getElementById("prioritySelect");
       const dueDateInput = document.getElementById("dueDateInput");
+      const themeToggle = document.getElementById("themeToggle");
+      const themeDropdown = document.getElementById("themeDropdown");
+      const progressFill = document.getElementById("progressFill");
+      const mobileProgressFill = document.getElementById("mobileProgressFill");
+      const progressText = document.getElementById("progressText");
+      const completedCount = document.getElementById("completedCount");
+      const totalCount = document.getElementById("totalCount");
+      const emptyState = document.getElementById("emptyState");
 
       // Initialize flatpickr for date selection
       flatpickr(dueDateInput, {
@@ -159,71 +352,160 @@
         minDate: "today"
       });
 
+      // Current theme state
+      let currentTheme = localStorage.getItem('todoTheme') || 'blue';
+
+      // Apply saved theme on load
+      document.addEventListener('DOMContentLoaded', function() {
+        applyTheme(currentTheme);
+        loadTasks();
+        updateProgress();
+        
+        // Add animation to add button on page load
+        addTaskBtn.classList.add('bounce-animation');
+        setTimeout(() => {
+          addTaskBtn.classList.remove('bounce-animation');
+        }, 600);
+      });
+
+      // Theme functionality
+      themeToggle.addEventListener('click', function() {
+        themeDropdown.classList.toggle('hidden');
+      });
+
+      document.querySelectorAll('.theme-option').forEach(option => {
+        option.addEventListener('click', function() {
+          const theme = this.dataset.theme;
+          applyTheme(theme);
+          themeDropdown.classList.add('hidden');
+        });
+      });
+
+      function applyTheme(theme) {
+        currentTheme = theme;
+        document.body.className = `theme-${theme} bg-gray-100 flex items-center justify-center min-h-screen theme-transition`;
+        localStorage.setItem('todoTheme', theme);
+        
+        // Update progress bar color based on theme
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+          bar.className = `progress-fill bg-${getThemeColor(theme)}-500`;
+        });
+        
+        // Update button colors
+        const primaryButtons = document.querySelectorAll('.btn-primary');
+        primaryButtons.forEach(btn => {
+          btn.className = btn.className.replace(/bg-(blue|green|purple|yellow)-\d+/, `bg-${getThemeColor(theme)}-500`);
+          btn.className = btn.className.replace(/hover:bg-(blue|green|purple|yellow)-\d+/, `hover:bg-${getThemeColor(theme)}-600`);
+          btn.className = btn.className.replace(/focus:ring-(blue|green|purple|yellow)-\d+/, `focus:ring-${getThemeColor(theme)}-500`);
+        });
+      }
+
+      function getThemeColor(theme) {
+        const colorMap = {
+          blue: 'blue',
+          green: 'green',
+          purple: 'purple',
+          dark: 'yellow'
+        };
+        return colorMap[theme] || 'blue';
+      }
+
+      // Progress tracking
+      function updateProgress() {
+        const totalTasks = taskList.children.length;
+        const completedTasks = document.querySelectorAll('.task-text.completed').length;
+        const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        progressFill.style.width = `${progress}%`;
+        mobileProgressFill.style.width = `${progress}%`;
+        progressText.textContent = `${progress}%`;
+        completedCount.textContent = completedTasks;
+        totalCount.textContent = totalTasks;
+        
+        // Show/hide empty state
+        if (totalTasks === 0) {
+          emptyState.classList.remove('hidden');
+        } else {
+          emptyState.classList.add('hidden');
+        }
+        
+        // Pulse animation when progress changes
+        if (progress > 0) {
+          progressFill.classList.add('pulse-animation');
+          mobileProgressFill.classList.add('pulse-animation');
+          setTimeout(() => {
+            progressFill.classList.remove('pulse-animation');
+            mobileProgressFill.classList.remove('pulse-animation');
+          }, 500);
+        }
+      }
+
       // Function to save all tasks to localStorage
       function saveTasks() {
         const tasks = [];
         // Select all list items in the task list
-        taskList.querySelectorAll("li").forEach((li) => {
-          const taskSpan = li.querySelector(".task-text");
-          const categoryBadge = li.querySelector(".category-badge");
-          const priorityBadge = li.querySelector(".priority-badge");
-          const dueDateSpan = li.querySelector(".due-date");
+        taskList.querySelectorAll('li').forEach((li) => {
+          const taskSpan = li.querySelector('.task-text');
+          const categoryBadge = li.querySelector('.category-badge');
+          const priorityBadge = li.querySelector('.priority-badge');
+          const dueDateSpan = li.querySelector('.due-date');
           
           if (taskSpan) {
             tasks.push({
               text: taskSpan.textContent,
-              completed: taskSpan.classList.contains("completed"),
-              category: categoryBadge ? categoryBadge.dataset.category : "personal",
-              priority: priorityBadge ? priorityBadge.dataset.priority : "medium",
-              dueDate: dueDateSpan ? dueDateSpan.textContent : ""
+              completed: taskSpan.classList.contains('completed'),
+              category: categoryBadge ? categoryBadge.dataset.category : 'personal',
+              priority: priorityBadge ? priorityBadge.dataset.priority : 'medium',
+              dueDate: dueDateSpan ? dueDateSpan.textContent : ''
             });
           }
         });
         // Store the array as a JSON string
-        localStorage.setItem("todoListTasks", JSON.stringify(tasks));
+        localStorage.setItem('todoListTasks', JSON.stringify(tasks));
+        updateProgress();
       }
 
       // Function to create a new task item
-      function createTask(taskText, isCompleted = false, category = "personal", priority = "medium", dueDate = "") {
+      function createTask(taskText, isCompleted = false, category = 'personal', priority = 'medium', dueDate = '') {
         // Create list item
-        const li = document.createElement("li");
-        li.className =
-          "flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100";
+        const li = document.createElement('li');
+        li.className = 'task-item flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 task-enter theme-transition';
 
         // Create task content container
-        const taskContent = document.createElement("div");
-        taskContent.className = "flex-grow mb-2 md:mb-0";
+        const taskContent = document.createElement('div');
+        taskContent.className = 'flex-grow mb-2 md:mb-0';
 
         // Create span for the task text
-        const taskSpan = document.createElement("span");
+        const taskSpan = document.createElement('span');
         taskSpan.textContent = taskText;
-        taskSpan.className = "task-text flex-grow text-gray-700";
+        taskSpan.className = 'task-text flex-grow text-gray-700 transition-all duration-300';
         if (isCompleted) {
-          taskSpan.classList.add("completed");
+          taskSpan.classList.add('completed');
         }
 
         // Create badges container
-        const badgesContainer = document.createElement("div");
-        badgesContainer.className = "flex flex-wrap gap-2 mt-2 md:mt-0";
+        const badgesContainer = document.createElement('div');
+        badgesContainer.className = 'flex flex-wrap gap-2 mt-2 md:mt-0';
 
         // Create category badge
-        const categoryBadge = document.createElement("span");
+        const categoryBadge = document.createElement('span');
         categoryBadge.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-        categoryBadge.className = `category-badge px-2 py-1 text-xs font-medium rounded-full category-${category}`;
+        categoryBadge.className = `category-badge px-2 py-1 text-xs font-medium rounded-full category-${category} transition-transform hover:scale-105`;
         categoryBadge.dataset.category = category;
 
         // Create priority badge
-        const priorityBadge = document.createElement("span");
+        const priorityBadge = document.createElement('span');
         priorityBadge.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
-        priorityBadge.className = `priority-badge px-2 py-1 text-xs font-medium rounded-full priority-${priority}`;
+        priorityBadge.className = `priority-badge px-2 py-1 text-xs font-medium rounded-full priority-${priority} transition-transform hover:scale-105`;
         priorityBadge.dataset.priority = priority;
 
         // Create due date display if exists
         let dueDateSpan = null;
         if (dueDate) {
-          dueDateSpan = document.createElement("span");
+          dueDateSpan = document.createElement('span');
           dueDateSpan.textContent = dueDate;
-          dueDateSpan.className = "due-date px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full";
+          dueDateSpan.className = 'due-date px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full transition-transform hover:scale-105';
         }
 
         // Add badges to container
@@ -234,25 +516,34 @@
         }
 
         // Add click event to the list item to toggle completion
-        li.addEventListener("click", (event) => {
+        li.addEventListener('click', (event) => {
           // We only toggle if the click is not on the delete button itself or its icon
-          if (event.target.closest("button") === null) {
-            taskSpan.classList.toggle("completed");
+          if (event.target.closest('button') === null) {
+            taskSpan.classList.toggle('completed');
+            taskSpan.classList.add('pulse-animation');
+            setTimeout(() => {
+              taskSpan.classList.remove('pulse-animation');
+            }, 500);
             saveTasks(); // Save after toggling
           }
         });
 
         // Create delete button
-        const deleteBtn = document.createElement("button");
+        const deleteBtn = document.createElement('button');
         deleteBtn.innerHTML = `
                 <svg class="w-5 h-5 text-gray-400 hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             `;
-        deleteBtn.className = "ml-4 p-1";
+        deleteBtn.className = 'ml-4 p-1 transition-transform hover:scale-110';
 
         // Add click event to the delete button to remove the task
-        deleteBtn.addEventListener("click", () => {
-          taskList.removeChild(li);
-          saveTasks(); // Save after deleting
+        deleteBtn.addEventListener('click', () => {
+          li.classList.add('task-exit');
+          setTimeout(() => {
+            if (li.parentNode) {
+              taskList.removeChild(li);
+              saveTasks(); // Save after deleting
+            }
+          }, 300);
         });
 
         // Append elements to task content
@@ -265,6 +556,11 @@
 
         // Append the list item to the task list
         taskList.appendChild(li);
+        
+        // Add bounce animation to new task
+        setTimeout(() => {
+          li.classList.remove('task-enter');
+        }, 300);
       }
 
       // Function to handle adding a new task
@@ -274,12 +570,18 @@
         const priority = prioritySelect.value;
         const dueDate = dueDateInput.value;
         
-        if (taskText !== "") {
+        if (taskText !== '') {
           createTask(taskText, false, category, priority, dueDate);
           saveTasks(); // Save after adding
-          taskInput.value = ""; // Clear the input field
-          dueDateInput.value = ""; // Clear the date field
+          taskInput.value = ''; // Clear the input field
+          dueDateInput.value = ''; // Clear the date field
           taskInput.focus(); // Set focus back to the input field
+          
+          // Add bounce animation to add button
+          addTaskBtn.classList.add('bounce-animation');
+          setTimeout(() => {
+            addTaskBtn.classList.remove('bounce-animation');
+          }, 600);
         }
       }
 
@@ -287,7 +589,7 @@
       function loadTasks() {
         // Get tasks from localStorage, or an empty array string if null
         const savedTasks = JSON.parse(
-          localStorage.getItem("todoListTasks") || "[]"
+          localStorage.getItem('todoListTasks') || '[]'
         );
         savedTasks.forEach((task) => {
           createTask(task.text, task.completed, task.category, task.priority, task.dueDate);
@@ -295,17 +597,21 @@
       }
 
       // Add event listener for the "Add" button click
-      addTaskBtn.addEventListener("click", handleAddTask);
+      addTaskBtn.addEventListener('click', handleAddTask);
 
       // Add event listener for the "Enter" key press in the input field
-      taskInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
+      taskInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
           handleAddTask();
         }
       });
 
-      // Load tasks from localStorage when the DOM is fully loaded
-      document.addEventListener("DOMContentLoaded", loadTasks);
+      // Close theme dropdown when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!themeToggle.contains(event.target) && !themeDropdown.contains(event.target)) {
+          themeDropdown.classList.add('hidden');
+        }
+      });
     </script>
   </body>
 </html>
