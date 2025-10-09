@@ -536,11 +536,11 @@ body {
 
         // Add click event to the list item to toggle completion
         li.addEventListener('click', (event) => {
-          // We only toggle if the click is not on the delete button itself or its icon
-          if (event.target.closest('button') === null) {
+          // Only toggle completion if not in edit mode and not clicking a button
+          if (!li.classList.contains('editing') && event.target.closest('button') === null) {
             taskSpan.classList.toggle('completed');
             taskSpan.classList.add('pulse-animation');
-            setTimeout(() => {
+            setTimeout(() => { 
               taskSpan.classList.remove('pulse-animation');
             }, 500);
             saveTasks(); // Save after toggling
@@ -548,14 +548,23 @@ body {
         });
 
         // Create delete button
+        const editBtn = document.createElement('button');
+        editBtn.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg>`;
+        editBtn.className = 'p-1 transition-transform hover:scale-110 edit-btn';
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent li click event from firing
+            toggleEditMode(li);
+        });
+
         const deleteBtn = document.createElement('button');
         deleteBtn.innerHTML = `
                 <svg class="w-5 h-5 text-gray-400 hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             `;
-        deleteBtn.className = 'ml-4 p-1 transition-transform hover:scale-110';
+        deleteBtn.className = 'p-1 transition-transform hover:scale-110 delete-btn';
 
         // Add click event to the delete button to remove the task
-        deleteBtn.addEventListener('click', () => {
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent li click event from firing
           li.classList.add('task-exit');
           setTimeout(() => {
             if (li.parentNode) {
@@ -565,13 +574,17 @@ body {
           }, 300);
         });
 
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'flex items-center space-x-2 ml-4';
+        buttonsContainer.appendChild(editBtn);
+        buttonsContainer.appendChild(deleteBtn);
         // Append elements to task content
         taskContent.appendChild(taskSpan);
         taskContent.appendChild(badgesContainer);
 
         // Append the task content and delete button to the list item
         li.appendChild(taskContent);
-        li.appendChild(deleteBtn);
+        li.appendChild(buttonsContainer);
 
         // Append the list item to the task list
         taskList.appendChild(li);
@@ -580,6 +593,86 @@ body {
         setTimeout(() => {
           li.classList.remove('task-enter');
         }, 300);
+      }
+
+      // Function to toggle edit mode for a task
+      function toggleEditMode(li) {
+        li.classList.toggle('editing');
+        const isEditing = li.classList.contains('editing');
+
+        const taskContent = li.querySelector('.flex-grow');
+        const buttonsContainer = li.querySelector('.flex.items-center.space-x-2');
+        const editBtn = buttonsContainer.querySelector('.edit-btn');
+
+        if (isEditing) {
+            // Switch to edit mode
+            const taskSpan = li.querySelector('.task-text');
+            const categoryBadge = li.querySelector('.category-badge');
+            const priorityBadge = li.querySelector('.priority-badge');
+            const dueDateSpan = li.querySelector('.due-date');
+
+            // Create input fields pre-filled with current values
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.value = taskSpan.textContent;
+            textInput.className = 'task-edit-input flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500';
+
+            const categoryEditSelect = categorySelect.cloneNode(true);
+            categoryEditSelect.value = categoryBadge.dataset.category;
+            categoryEditSelect.className = 'task-edit-category w-full p-2 border border-gray-300 rounded-lg';
+
+            const priorityEditSelect = prioritySelect.cloneNode(true);
+            priorityEditSelect.value = priorityBadge.dataset.priority;
+            priorityEditSelect.className = 'task-edit-priority w-full p-2 border border-gray-300 rounded-lg';
+
+            const dateEditInput = document.createElement('input');
+            dateEditInput.type = 'text';
+            dateEditInput.value = dueDateSpan ? dueDateSpan.textContent : '';
+            dateEditInput.className = 'task-edit-date w-full p-2 border border-gray-300 rounded-lg';
+            flatpickr(dateEditInput, { dateFormat: "Y-m-d", minDate: "today" });
+
+            // Replace display elements with inputs
+            taskContent.innerHTML = ''; // Clear existing content
+            taskContent.appendChild(textInput);
+            const editFields = document.createElement('div');
+            editFields.className = 'grid grid-cols-1 md:grid-cols-3 gap-2 mt-2';
+            editFields.appendChild(categoryEditSelect);
+            editFields.appendChild(priorityEditSelect);
+            editFields.appendChild(dateEditInput);
+            taskContent.appendChild(editFields);
+
+            // Change edit button to a save button
+            editBtn.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-green-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+        } else {
+            // Switch back to display mode (Save was clicked)
+            const textInput = li.querySelector('.task-edit-input');
+            const categoryEditSelect = li.querySelector('.task-edit-category');
+            const priorityEditSelect = li.querySelector('.task-edit-priority');
+            const dateEditInput = li.querySelector('.task-edit-date');
+
+            if (textInput.value.trim() === '') {
+                alert('Task text cannot be empty.');
+                li.classList.add('editing'); // Stay in edit mode
+                return;
+            }
+
+            // Recreate the task with updated values to ensure consistency
+            const isCompleted = li.querySelector('.task-text')?.classList.contains('completed') || false;
+            const updatedTask = {
+                text: textInput.value.trim(),
+                completed: isCompleted,
+                category: categoryEditSelect.value,
+                priority: priorityEditSelect.value,
+                dueDate: dateEditInput.value
+            };
+
+            // To keep the task in the same position, we can find its index and insert the new one there.
+            const taskIndex = Array.from(taskList.children).indexOf(li);
+            taskList.removeChild(li);
+            createTask(updatedTask.text, updatedTask.completed, updatedTask.category, updatedTask.priority, updatedTask.dueDate);
+            taskList.insertBefore(taskList.lastChild, taskList.children[taskIndex]);
+            saveTasks();
+        }
       }
 
       // Function to handle adding a new task
