@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-T" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> To-Do List</title>
+    <title>To-Do List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
       /* Custom styles */
@@ -19,7 +22,39 @@
         font-family: "Inter", sans-serif;
         transition: all 0.3s ease-in-out;
       }
-      
+
+      /* Glass morphism effect */
+      /* Glass morphism effect */
+      .glass {
+        background: rgba(255, 255, 255, 0.25) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+      }
+
+      .glass-dark {
+        background: rgba(0, 0, 0, 0.25) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5) !important;
+      }
+
+      .glass-task {
+        background: rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      }
+
+      .glass-task-dark {
+        background: rgba(0, 0, 0, 0.2) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+
       /* Color Themes */
       .theme-blue {
         --primary-color: #3b82f6;
@@ -29,7 +64,7 @@
         --text-color: #1f2937;
         --task-bg: #f9fafb;
       }
-      
+
       .theme-green {
         --primary-color: #10b981;
         --primary-hover: #059669;
@@ -38,7 +73,7 @@
         --text-color: #064e3b;
         --task-bg: #f0fdf4;
       }
-      
+
       .theme-purple {
         --primary-color: #8b5cf6;
         --primary-hover: #7c3aed;
@@ -47,7 +82,7 @@
         --text-color: #5b21b6;
         --task-bg: #faf5ff;
       }
-      
+
       .theme-dark {
         --primary-color: #f59e0b;
         --primary-hover: #d97706;
@@ -56,25 +91,25 @@
         --text-color: #f9fafb;
         --task-bg: #4b5563;
       }
-      
+
       /* Apply theme variables */
       .theme-blue body {
         background-color: var(--bg-color);
       }
-      
+
       .theme-blue .card {
         background-color: var(--card-bg);
         color: var(--text-color);
       }
-      
+
       .theme-blue .task-item {
         background-color: var(--task-bg);
       }
-      
+
       .theme-blue .btn-primary {
         background-color: var(--primary-color);
       }
-      
+
       .theme-blue .btn-primary:hover {
         background-color: var(--primary-hover);
       }
@@ -84,7 +119,7 @@
         text-decoration: line-through;
         color: #9ca3af; /* gray-400 */
       }
-      
+
       /* Animation classes */
       @keyframes slideIn {
         from {
@@ -96,7 +131,7 @@
           transform: translateY(0);
         }
       }
-      
+
       @keyframes fadeOut {
         from {
           opacity: 1;
@@ -107,21 +142,27 @@
           transform: translateX(-100%);
         }
       }
-      
+
       @keyframes pulse {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
         }
         50% {
           transform: scale(1.05);
         }
       }
-      
+
       @keyframes bounce {
-        0%, 20%, 53%, 80%, 100% {
-          transform: translate3d(0,0,0);
+        0%,
+        20%,
+        53%,
+        80%,
+        100% {
+          transform: translate3d(0, 0, 0);
         }
-        40%, 43% {
+        40%,
+        43% {
           transform: translate3d(0, -8px, 0);
         }
         70% {
@@ -131,23 +172,23 @@
           transform: translate3d(0, -2px, 0);
         }
       }
-      
+
       .task-enter {
         animation: slideIn 0.3s ease-out;
       }
-      
+
       .task-exit {
         animation: fadeOut 0.3s ease-out;
       }
-      
+
       .pulse-animation {
         animation: pulse 0.5s ease-in-out;
       }
-      
+
       .bounce-animation {
         animation: bounce 0.6s ease-in-out;
       }
-      
+
       /* Progress bar styles */
       .progress-bar {
         height: 8px;
@@ -156,13 +197,13 @@
         overflow: hidden;
         transition: width 0.5s ease-in-out;
       }
-      
+
       .progress-fill {
         height: 100%;
         border-radius: 4px;
         transition: width 0.5s ease-in-out;
       }
-      
+
       /* Priority badge styles */
       .priority-low {
         background-color: #d1fae5;
@@ -176,7 +217,7 @@
         background-color: #fee2e2;
         color: #991b1b;
       }
-      
+
       /* Category badge styles */
       .category-personal {
         background-color: #dbeafe;
@@ -194,66 +235,146 @@
         background-color: #dcfce7;
         color: #166534;
       }
-      
+
       /* Theme transition */
       .theme-transition {
         transition: all 0.3s ease-in-out;
       }
+
       /* Body backgrounds with gradients for each theme */
-body.theme-blue {
-  background: linear-gradient(135deg, #93c5fd, #3b82f6); /* light blue → blue */
-}
-body.theme-green {
-  background: linear-gradient(135deg, #a7f3d0, #10b981); /* light green → green */
-}
-body.theme-purple {
-  background: linear-gradient(135deg, #ddd6fe, #8b5cf6); /* light purple → purple */
-}
-body.theme-dark {
-  background: linear-gradient(135deg, #374151, #1f2937); /* dark grey → darker grey */
-}
+      body.theme-blue {
+        background: linear-gradient(
+          135deg,
+          #93c5fd,
+          #3b82f6
+        ); /* light blue → blue */
+      }
+      body.theme-green {
+        background: linear-gradient(
+          135deg,
+          #a7f3d0,
+          #10b981
+        ); /* light green → green */
+      }
+      body.theme-purple {
+        background: linear-gradient(
+          135deg,
+          #ddd6fe,
+          #8b5cf6
+        ); /* light purple → purple */
+      }
+      body.theme-dark {
+        background: linear-gradient(
+          135deg,
+          #374151,
+          #1f2937
+        ); /* dark grey → darker grey */
+      }
 
-/* Smooth transition for theme change */
-body {
-  transition: background 0.5s ease-in-out;
-}
+      /* Smooth transition for theme change */
+      body {
+        transition: background 0.5s ease-in-out;
+      }
 
+      /* Glass morphism task items */
+      .glass-task {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .glass-task-dark {
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      /* White text for all form elements */
+      input,
+      select,
+      option,
+      ::placeholder {
+        color: white !important;
+      }
+
+      /* Better contrast for dropdown options */
+      select option {
+        background: rgba(0, 0, 0, 0.8);
+      }
     </style>
   </head>
-  <body class="theme-blue bg-gray-100 flex items-center justify-center min-h-screen theme-transition">
-    <div class="card bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 p-6 theme-transition">
+  <body
+    class="theme-blue bg-gray-100 flex items-center justify-center min-h-screen theme-transition"
+  >
+    <div
+      class="card glass rounded-lg shadow-xl w-full max-w-3xl mx-4 p-6 theme-transition"
+    >
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800"> To-Do List</h1>
+        <h1 class="text-3xl font-bold text-gray-800">To-Do List</h1>
         <div class="flex items-center gap-4">
           <div class="hidden md:flex flex-col items-end">
             <div class="text-sm text-gray-600">
-              <span id="completedCount">0</span> of <span id="totalCount">0</span> tasks completed
+              <span id="completedCount">0</span> of
+              <span id="totalCount">0</span> tasks completed
             </div>
             <div class="w-32 progress-bar mt-1">
-              <div id="progressFill" class="progress-fill bg-blue-500" style="width: 0%"></div>
+              <div
+                id="progressFill"
+                class="progress-fill bg-blue-500"
+                style="width: 0%"
+              ></div>
             </div>
           </div>
-          
+
           <div class="relative">
-            <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition">
-              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+            <button
+              id="themeToggle"
+              class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+            >
+              <svg
+                class="w-5 h-5 text-gray-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
+                ></path>
               </svg>
             </button>
-            <div id="themeDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">
-              <button data-theme="blue" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <div
+              id="themeDropdown"
+              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10"
+            >
+              <button
+                data-theme="blue"
+                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
                 <div class="w-4 h-4 rounded-full bg-blue-500 mr-3"></div>
                 Blue Theme
               </button>
-              <button data-theme="green" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <button
+                data-theme="green"
+                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
                 <div class="w-4 h-4 rounded-full bg-green-500 mr-3"></div>
                 Green Theme
               </button>
-              <button data-theme="purple" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <button
+                data-theme="purple"
+                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
                 <div class="w-4 h-4 rounded-full bg-purple-500 mr-3"></div>
                 Purple Theme
               </button>
-              <button data-theme="dark" class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <button
+                data-theme="dark"
+                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
                 <div class="w-4 h-4 rounded-full bg-gray-800 mr-3"></div>
                 Dark Theme
               </button>
@@ -267,7 +388,7 @@ body {
           <input
             type="text"
             id="taskInput"
-            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task "
             placeholder="Add a new task..."
           />
           <button
@@ -277,33 +398,45 @@ body {
             Add Task
           </button>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <select id="categorySelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Category</label
+            >
+            <select
+              id="categorySelect"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task"
+            >
               <option value="personal">Personal</option>
               <option value="work">Work</option>
               <option value="shopping">Shopping</option>
               <option value="health">Health</option>
             </select>
           </div>
-          
+
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-            <select id="prioritySelect" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Priority</label
+            >
+            <select
+              id="prioritySelect"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task"
+            >
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
               <option value="high">High</option>
             </select>
           </div>
-          
+
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Due Date</label
+            >
             <input
               type="text"
               id="dueDateInput"
-              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task"
               placeholder="Select date"
             />
           </div>
@@ -316,17 +449,30 @@ body {
           <span id="progressText" class="text-sm font-medium">0%</span>
         </div>
         <div class="w-full progress-bar">
-          <div id="mobileProgressFill" class="progress-fill bg-blue-500" style="width: 0%"></div>
+          <div
+            id="mobileProgressFill"
+            class="progress-fill bg-blue-500"
+            style="width: 0%"
+          ></div>
         </div>
       </div>
 
       <div>
-        <ul id="taskList" class="space-y-3">
-          </ul>
-        
+        <ul id="taskList" class="space-y-3"></ul>
+
         <div id="emptyState" class="text-center py-12 hidden">
-          <svg class="w-24 h-24 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          <svg
+            class="w-24 h-24 text-gray-300 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            ></path>
           </svg>
           <p class="text-gray-500 text-lg">No tasks yet. Add one above!</p>
         </div>
@@ -353,94 +499,140 @@ body {
       // Initialize flatpickr for date selection
       flatpickr(dueDateInput, {
         dateFormat: "Y-m-d",
-        minDate: "today"
+        minDate: "today",
       });
 
       // Current theme state
-      let currentTheme = localStorage.getItem('todoTheme') || 'blue';
+      let currentTheme = localStorage.getItem("todoTheme") || "blue";
 
       // Apply saved theme on load
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
         applyTheme(currentTheme);
         loadTasks();
         updateProgress();
-        
+
         // Add animation to add button on page load
-        addTaskBtn.classList.add('bounce-animation');
+        addTaskBtn.classList.add("bounce-animation");
         setTimeout(() => {
-          addTaskBtn.classList.remove('bounce-animation');
+          addTaskBtn.classList.remove("bounce-animation");
         }, 600);
       });
 
       // Theme functionality
-      themeToggle.addEventListener('click', function() {
-        themeDropdown.classList.toggle('hidden');
+      themeToggle.addEventListener("click", function () {
+        themeDropdown.classList.toggle("hidden");
       });
 
-      document.querySelectorAll('.theme-option').forEach(option => {
-        option.addEventListener('click', function() {
+      document.querySelectorAll(".theme-option").forEach((option) => {
+        option.addEventListener("click", function () {
           const theme = this.dataset.theme;
           applyTheme(theme);
-          themeDropdown.classList.add('hidden');
+          themeDropdown.classList.add("hidden");
         });
       });
 
       function applyTheme(theme) {
         currentTheme = theme;
         document.body.className = `theme-${theme} bg-gray-100 flex items-center justify-center min-h-screen theme-transition`;
-        localStorage.setItem('todoTheme', theme);
-        
+        localStorage.setItem("todoTheme", theme);
+
+        // Update glass morphism based on theme
+        const card = document.querySelector(".card");
+        if (theme === "dark") {
+          card.classList.remove("glass");
+          card.classList.add("glass-dark");
+        } else {
+          card.classList.remove("glass-dark");
+          card.classList.add("glass");
+        }
+
         // Update progress bar color based on theme
-        const progressBars = document.querySelectorAll('.progress-fill');
-        progressBars.forEach(bar => {
+        const progressBars = document.querySelectorAll(".progress-fill");
+        progressBars.forEach((bar) => {
           bar.className = `progress-fill bg-${getThemeColor(theme)}-500`;
         });
-        
+
         // Update button colors
-        const primaryButtons = document.querySelectorAll('.btn-primary');
-        primaryButtons.forEach(btn => {
-          btn.className = btn.className.replace(/bg-(blue|green|purple|yellow)-\d+/, `bg-${getThemeColor(theme)}-500`);
-          btn.className = btn.className.replace(/hover:bg-(blue|green|purple|yellow)-\d+/, `hover:bg-${getThemeColor(theme)}-600`);
-          btn.className = btn.className.replace(/focus:ring-(blue|green|purple|yellow)-\d+/, `focus:ring-${getThemeColor(theme)}-500`);
+        const primaryButtons = document.querySelectorAll(".btn-primary");
+        primaryButtons.forEach((btn) => {
+          btn.className = btn.className.replace(
+            /bg-(blue|green|purple|yellow)-\d+/,
+            `bg-${getThemeColor(theme)}-500`
+          );
+          btn.className = btn.className.replace(
+            /hover:bg-(blue|green|purple|yellow)-\d+/,
+            `hover:bg-${getThemeColor(theme)}-600`
+          );
+          btn.className = btn.className.replace(
+            /focus:ring-(blue|green|purple|yellow)-\d+/,
+            `focus:ring-${getThemeColor(theme)}-500`
+          );
+        });
+
+        // Update task items glass effect
+        const taskItems = document.querySelectorAll(".task-item");
+        taskItems.forEach((item) => {
+          if (theme === "dark") {
+            item.classList.remove("glass-task");
+            item.classList.add("glass-task-dark");
+          } else {
+            item.classList.remove("glass-task-dark");
+            item.classList.add("glass-task");
+          }
+        });
+
+        // Update input fields glass effect
+        const glassElements = document.querySelectorAll(".glass-task");
+        glassElements.forEach((element) => {
+          if (theme === "dark") {
+            element.classList.remove("glass-task");
+            element.classList.add("glass-task-dark");
+          } else {
+            element.classList.remove("glass-task-dark");
+            element.classList.add("glass-task");
+          }
         });
       }
 
       function getThemeColor(theme) {
         const colorMap = {
-          blue: 'blue',
-          green: 'green',
-          purple: 'purple',
-          dark: 'yellow'
+          blue: "blue",
+          green: "green",
+          purple: "purple",
+          dark: "yellow",
         };
-        return colorMap[theme] || 'blue';
+        return colorMap[theme] || "blue";
       }
 
       // Progress tracking
       function updateProgress() {
         const totalTasks = taskList.children.length;
-        const completedTasks = document.querySelectorAll('.task-text.completed').length;
-        const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-        
+        const completedTasks = document.querySelectorAll(
+          ".task-text.completed"
+        ).length;
+        const progress =
+          totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
         progressFill.style.width = `${progress}%`;
         mobileProgressFill.style.width = `${progress}%`;
         progressText.textContent = `${progress}%`;
         completedCount.textContent = completedTasks;
         totalCount.textContent = totalTasks;
-        
+
         // Show/hide empty state
         if (totalTasks === 0) {
-          emptyState.classList.remove('hidden');
+          emptyState.classList.remove("hidden");
         } else {
-          emptyState.classList.add('hidden');
+          emptyState.classList.add("hidden");
         }
-        
+
         // Pulse animation when progress changes
         if (progress > 0) {
-          progressFill.classList.add('pulse-animation');
-          mobileProgressFill.classList.add('pulse-animation');
+          progressFill.classList.add("pulse-animation");
+          mobileProgressFill.classList.add("pulse-animation");
           setTimeout(() => {
-            progressFill.classList.remove('pulse-animation');
-            mobileProgressFill.classList.remove('pulse-animation');
+            progressFill.classList.remove("pulse-animation");
+            mobileProgressFill.classList.remove("pulse-animation");
           }, 500);
         }
       }
@@ -449,67 +641,82 @@ body {
       function saveTasks() {
         const tasks = [];
         // Select all list items in the task list
-        taskList.querySelectorAll('li').forEach((li) => {
-          const taskSpan = li.querySelector('.task-text');
-          const categoryBadge = li.querySelector('.category-badge');
-          const priorityBadge = li.querySelector('.priority-badge');
-          const dueDateSpan = li.querySelector('.due-date');
-          
+        taskList.querySelectorAll("li").forEach((li) => {
+          const taskSpan = li.querySelector(".task-text");
+          const categoryBadge = li.querySelector(".category-badge");
+          const priorityBadge = li.querySelector(".priority-badge");
+          const dueDateSpan = li.querySelector(".due-date");
+
           if (taskSpan) {
             tasks.push({
               text: taskSpan.textContent,
-              completed: taskSpan.classList.contains('completed'),
-              category: categoryBadge ? categoryBadge.dataset.category : 'personal',
-              priority: priorityBadge ? priorityBadge.dataset.priority : 'medium',
-              dueDate: dueDateSpan ? dueDateSpan.textContent : ''
+              completed: taskSpan.classList.contains("completed"),
+              category: categoryBadge
+                ? categoryBadge.dataset.category
+                : "personal",
+              priority: priorityBadge
+                ? priorityBadge.dataset.priority
+                : "medium",
+              dueDate: dueDateSpan ? dueDateSpan.textContent : "",
             });
           }
         });
         // Store the array as a JSON string
-        localStorage.setItem('todoListTasks', JSON.stringify(tasks));
+        localStorage.setItem("todoListTasks", JSON.stringify(tasks));
         updateProgress();
       }
 
       // Function to create a new task item
-      function createTask(taskText, isCompleted = false, category = 'personal', priority = 'medium', dueDate = '') {
+      function createTask(
+        taskText,
+        isCompleted = false,
+        category = "personal",
+        priority = "medium",
+        dueDate = ""
+      ) {
         // Create list item
-        const li = document.createElement('li');
-        li.className = 'task-item flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 task-enter theme-transition';
+        const li = document.createElement("li");
+        li.className =
+          "task-item flex flex-col md:flex-row md:items-center justify-between p-4 rounded-lg shadow-sm cursor-pointer hover:bg-opacity-70 task-enter theme-transition glass-task";
 
         // Create task content container
-        const taskContent = document.createElement('div');
-        taskContent.className = 'flex-grow mb-2 md:mb-0';
+        const taskContent = document.createElement("div");
+        taskContent.className = "flex-grow mb-2 md:mb-0";
 
         // Create span for the task text
-        const taskSpan = document.createElement('span');
+        const taskSpan = document.createElement("span");
         taskSpan.textContent = taskText;
-        taskSpan.className = 'task-text flex-grow text-gray-700 transition-all duration-300';
+        taskSpan.className =
+          "task-text flex-grow text-gray-700 transition-all duration-300";
         if (isCompleted) {
-          taskSpan.classList.add('completed');
+          taskSpan.classList.add("completed");
         }
 
         // Create badges container
-        const badgesContainer = document.createElement('div');
-        badgesContainer.className = 'flex flex-wrap gap-2 mt-2 md:mt-0';
+        const badgesContainer = document.createElement("div");
+        badgesContainer.className = "flex flex-wrap gap-2 mt-2 md:mt-0";
 
         // Create category badge
-        const categoryBadge = document.createElement('span');
-        categoryBadge.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        const categoryBadge = document.createElement("span");
+        categoryBadge.textContent =
+          category.charAt(0).toUpperCase() + category.slice(1);
         categoryBadge.className = `category-badge px-2 py-1 text-xs font-medium rounded-full category-${category} transition-transform hover:scale-105`;
         categoryBadge.dataset.category = category;
 
         // Create priority badge
-        const priorityBadge = document.createElement('span');
-        priorityBadge.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
+        const priorityBadge = document.createElement("span");
+        priorityBadge.textContent =
+          priority.charAt(0).toUpperCase() + priority.slice(1);
         priorityBadge.className = `priority-badge px-2 py-1 text-xs font-medium rounded-full priority-${priority} transition-transform hover:scale-105`;
         priorityBadge.dataset.priority = priority;
 
         // Create due date display if exists
         let dueDateSpan = null;
         if (dueDate) {
-          dueDateSpan = document.createElement('span');
+          dueDateSpan = document.createElement("span");
           dueDateSpan.textContent = dueDate;
-          dueDateSpan.className = 'due-date px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full transition-transform hover:scale-105';
+          dueDateSpan.className =
+            "due-date px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full transition-transform hover:scale-105";
         }
 
         // Add badges to container
@@ -520,37 +727,41 @@ body {
         }
 
         // Add click event to the list item to toggle completion
-        li.addEventListener('click', (event) => {
+        li.addEventListener("click", (event) => {
           // Only toggle completion if not in edit mode and not clicking a button
-          if (!li.classList.contains('editing') && event.target.closest('button') === null) {
-            taskSpan.classList.toggle('completed');
-            taskSpan.classList.add('pulse-animation');
-            setTimeout(() => { 
-              taskSpan.classList.remove('pulse-animation');
+          if (
+            !li.classList.contains("editing") &&
+            event.target.closest("button") === null
+          ) {
+            taskSpan.classList.toggle("completed");
+            taskSpan.classList.add("pulse-animation");
+            setTimeout(() => {
+              taskSpan.classList.remove("pulse-animation");
             }, 500);
             saveTasks(); // Save after toggling
           }
         });
 
         // Create delete button
-        const editBtn = document.createElement('button');
+        const editBtn = document.createElement("button");
         editBtn.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg>`;
-        editBtn.className = 'p-1 transition-transform hover:scale-110 edit-btn';
-        editBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent li click event from firing
-            toggleEditMode(li);
+        editBtn.className = "p-1 transition-transform hover:scale-110 edit-btn";
+        editBtn.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent li click event from firing
+          toggleEditMode(li);
         });
 
-        const deleteBtn = document.createElement('button');
+        const deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = `
                 <svg class="w-5 h-5 text-gray-400 hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             `;
-        deleteBtn.className = 'p-1 transition-transform hover:scale-110 delete-btn';
+        deleteBtn.className =
+          "p-1 transition-transform hover:scale-110 delete-btn";
 
         // Add click event to the delete button to remove the task
-        deleteBtn.addEventListener('click', (e) => {
+        deleteBtn.addEventListener("click", (e) => {
           e.stopPropagation(); // Prevent li click event from firing
-          li.classList.add('task-exit');
+          li.classList.add("task-exit");
           setTimeout(() => {
             if (li.parentNode) {
               taskList.removeChild(li);
@@ -559,8 +770,8 @@ body {
           }, 300);
         });
 
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.className = 'flex items-center space-x-2 ml-4';
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "flex items-center space-x-2 ml-4";
         buttonsContainer.appendChild(editBtn);
         buttonsContainer.appendChild(deleteBtn);
         // Append elements to task content
@@ -573,90 +784,113 @@ body {
 
         // Append the list item to the task list
         taskList.appendChild(li);
-        
+
+        // Apply theme-specific glass effect to the new task
+        if (currentTheme === "dark") {
+          li.classList.remove("glass-task");
+          li.classList.add("glass-task-dark");
+        }
+
         // Add bounce animation to new task
         setTimeout(() => {
-          li.classList.remove('task-enter');
+          li.classList.remove("task-enter");
         }, 300);
       }
 
       // Function to toggle edit mode for a task
       function toggleEditMode(li) {
-        li.classList.toggle('editing');
-        const isEditing = li.classList.contains('editing');
+        li.classList.toggle("editing");
+        const isEditing = li.classList.contains("editing");
 
-        const taskContent = li.querySelector('.flex-grow');
-        const buttonsContainer = li.querySelector('.flex.items-center.space-x-2');
-        const editBtn = buttonsContainer.querySelector('.edit-btn');
+        const taskContent = li.querySelector(".flex-grow");
+        const buttonsContainer = li.querySelector(
+          ".flex.items-center.space-x-2"
+        );
+        const editBtn = buttonsContainer.querySelector(".edit-btn");
 
         if (isEditing) {
-            // Switch to edit mode
-            const taskSpan = li.querySelector('.task-text');
-            const categoryBadge = li.querySelector('.category-badge');
-            const priorityBadge = li.querySelector('.priority-badge');
-            const dueDateSpan = li.querySelector('.due-date');
+          // Switch to edit mode
+          const taskSpan = li.querySelector(".task-text");
+          const categoryBadge = li.querySelector(".category-badge");
+          const priorityBadge = li.querySelector(".priority-badge");
+          const dueDateSpan = li.querySelector(".due-date");
 
-            // Create input fields pre-filled with current values
-            const textInput = document.createElement('input');
-            textInput.type = 'text';
-            textInput.value = taskSpan.textContent;
-            textInput.className = 'task-edit-input flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500';
+          // Create input fields pre-filled with current values
+          const textInput = document.createElement("input");
+          textInput.type = "text";
+          textInput.value = taskSpan.textContent;
+          textInput.className =
+            "task-edit-input flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500";
 
-            const categoryEditSelect = categorySelect.cloneNode(true);
-            categoryEditSelect.value = categoryBadge.dataset.category;
-            categoryEditSelect.className = 'task-edit-category w-full p-2 border border-gray-300 rounded-lg';
+          const categoryEditSelect = categorySelect.cloneNode(true);
+          categoryEditSelect.value = categoryBadge.dataset.category;
+          categoryEditSelect.className =
+            "task-edit-category w-full p-2 border border-gray-300 rounded-lg";
 
-            const priorityEditSelect = prioritySelect.cloneNode(true);
-            priorityEditSelect.value = priorityBadge.dataset.priority;
-            priorityEditSelect.className = 'task-edit-priority w-full p-2 border border-gray-300 rounded-lg';
+          const priorityEditSelect = prioritySelect.cloneNode(true);
+          priorityEditSelect.value = priorityBadge.dataset.priority;
+          priorityEditSelect.className =
+            "task-edit-priority w-full p-2 border border-gray-300 rounded-lg";
 
-            const dateEditInput = document.createElement('input');
-            dateEditInput.type = 'text';
-            dateEditInput.value = dueDateSpan ? dueDateSpan.textContent : '';
-            dateEditInput.className = 'task-edit-date w-full p-2 border border-gray-300 rounded-lg';
-            flatpickr(dateEditInput, { dateFormat: "Y-m-d", minDate: "today" });
+          const dateEditInput = document.createElement("input");
+          dateEditInput.type = "text";
+          dateEditInput.value = dueDateSpan ? dueDateSpan.textContent : "";
+          dateEditInput.className =
+            "task-edit-date w-full p-2 border border-gray-300 rounded-lg";
+          flatpickr(dateEditInput, { dateFormat: "Y-m-d", minDate: "today" });
 
-            // Replace display elements with inputs
-            taskContent.innerHTML = ''; // Clear existing content
-            taskContent.appendChild(textInput);
-            const editFields = document.createElement('div');
-            editFields.className = 'grid grid-cols-1 md:grid-cols-3 gap-2 mt-2';
-            editFields.appendChild(categoryEditSelect);
-            editFields.appendChild(priorityEditSelect);
-            editFields.appendChild(dateEditInput);
-            taskContent.appendChild(editFields);
+          // Replace display elements with inputs
+          taskContent.innerHTML = ""; // Clear existing content
+          taskContent.appendChild(textInput);
+          const editFields = document.createElement("div");
+          editFields.className = "grid grid-cols-1 md:grid-cols-3 gap-2 mt-2";
+          editFields.appendChild(categoryEditSelect);
+          editFields.appendChild(priorityEditSelect);
+          editFields.appendChild(dateEditInput);
+          taskContent.appendChild(editFields);
 
-            // Change edit button to a save button
-            editBtn.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-green-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+          // Change edit button to a save button
+          editBtn.innerHTML = `<svg class="w-5 h-5 text-gray-400 hover:text-green-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
         } else {
-            // Switch back to display mode (Save was clicked)
-            const textInput = li.querySelector('.task-edit-input');
-            const categoryEditSelect = li.querySelector('.task-edit-category');
-            const priorityEditSelect = li.querySelector('.task-edit-priority');
-            const dateEditInput = li.querySelector('.task-edit-date');
+          // Switch back to display mode (Save was clicked)
+          const textInput = li.querySelector(".task-edit-input");
+          const categoryEditSelect = li.querySelector(".task-edit-category");
+          const priorityEditSelect = li.querySelector(".task-edit-priority");
+          const dateEditInput = li.querySelector(".task-edit-date");
 
-            if (textInput.value.trim() === '') {
-                alert('Task text cannot be empty.');
-                li.classList.add('editing'); // Stay in edit mode
-                return;
-            }
+          if (textInput.value.trim() === "") {
+            alert("Task text cannot be empty.");
+            li.classList.add("editing"); // Stay in edit mode
+            return;
+          }
 
-            // Recreate the task with updated values to ensure consistency
-            const isCompleted = li.querySelector('.task-text')?.classList.contains('completed') || false;
-            const updatedTask = {
-                text: textInput.value.trim(),
-                completed: isCompleted,
-                category: categoryEditSelect.value,
-                priority: priorityEditSelect.value,
-                dueDate: dateEditInput.value
-            };
+          // Recreate the task with updated values to ensure consistency
+          const isCompleted =
+            li.querySelector(".task-text")?.classList.contains("completed") ||
+            false;
+          const updatedTask = {
+            text: textInput.value.trim(),
+            completed: isCompleted,
+            category: categoryEditSelect.value,
+            priority: priorityEditSelect.value,
+            dueDate: dateEditInput.value,
+          };
 
-            // To keep the task in the same position, we can find its index and insert the new one there.
-            const taskIndex = Array.from(taskList.children).indexOf(li);
-            taskList.removeChild(li);
-            createTask(updatedTask.text, updatedTask.completed, updatedTask.category, updatedTask.priority, updatedTask.dueDate);
-            taskList.insertBefore(taskList.lastChild, taskList.children[taskIndex]);
-            saveTasks();
+          // To keep the task in the same position, we can find its index and insert the new one there.
+          const taskIndex = Array.from(taskList.children).indexOf(li);
+          taskList.removeChild(li);
+          createTask(
+            updatedTask.text,
+            updatedTask.completed,
+            updatedTask.category,
+            updatedTask.priority,
+            updatedTask.dueDate
+          );
+          taskList.insertBefore(
+            taskList.lastChild,
+            taskList.children[taskIndex]
+          );
+          saveTasks();
         }
       }
 
@@ -666,18 +900,18 @@ body {
         const category = categorySelect.value;
         const priority = prioritySelect.value;
         const dueDate = dueDateInput.value;
-        
-        if (taskText !== '') {
+
+        if (taskText !== "") {
           createTask(taskText, false, category, priority, dueDate);
           saveTasks(); // Save after adding
-          taskInput.value = ''; // Clear the input field
-          dueDateInput.value = ''; // Clear the date field
+          taskInput.value = ""; // Clear the input field
+          dueDateInput.value = ""; // Clear the date field
           taskInput.focus(); // Set focus back to the input field
-          
+
           // Add bounce animation to add button
-          addTaskBtn.classList.add('bounce-animation');
+          addTaskBtn.classList.add("bounce-animation");
           setTimeout(() => {
-            addTaskBtn.classList.remove('bounce-animation');
+            addTaskBtn.classList.remove("bounce-animation");
           }, 600);
         }
       }
@@ -686,27 +920,36 @@ body {
       function loadTasks() {
         // Get tasks from localStorage, or an empty array string if null
         const savedTasks = JSON.parse(
-          localStorage.getItem('todoListTasks') || '[]'
+          localStorage.getItem("todoListTasks") || "[]"
         );
         savedTasks.forEach((task) => {
-          createTask(task.text, task.completed, task.category, task.priority, task.dueDate);
+          createTask(
+            task.text,
+            task.completed,
+            task.category,
+            task.priority,
+            task.dueDate
+          );
         });
       }
 
       // Add event listener for the "Add" button click
-      addTaskBtn.addEventListener('click', handleAddTask);
+      addTaskBtn.addEventListener("click", handleAddTask);
 
       // Add event listener for the "Enter" key press in the input field
-      taskInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
+      taskInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
           handleAddTask();
         }
       });
 
       // Close theme dropdown when clicking outside
-      document.addEventListener('click', function(event) {
-        if (!themeToggle.contains(event.target) && !themeDropdown.contains(event.target)) {
-          themeDropdown.classList.add('hidden');
+      document.addEventListener("click", function (event) {
+        if (
+          !themeToggle.contains(event.target) &&
+          !themeDropdown.contains(event.target)
+        ) {
+          themeDropdown.classList.add("hidden");
         }
       });
     </script>
