@@ -444,6 +444,16 @@
         </div>
       </div>
 
+      <!-- SEARCH (NEW) -->
+      <div class="mb-4">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search tasks, category, priority or date..."
+          class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task"
+        />
+      </div>
+
       <div class="md:hidden mb-6">
         <div class="flex justify-between items-center mb-2">
           <span class="text-sm text-gray-600">Progress</span>
@@ -460,6 +470,13 @@
 
       <div>
         <ul id="taskList" class="space-y-3"></ul>
+
+        <div id="noResults" class="text-center py-8 hidden">
+          <svg class="w-16 h-16 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"></path>
+          </svg>
+          <p class="text-gray-500 text-lg">No matching tasks</p>
+        </div>
 
         <div id="emptyState" class="text-center py-12 hidden">
           <svg
@@ -496,6 +513,10 @@
       const completedCount = document.getElementById("completedCount");
       const totalCount = document.getElementById("totalCount");
       const emptyState = document.getElementById("emptyState");
+
+      // Search related elements (new)
+      const searchInput = document.getElementById("searchInput");
+      const noResults = document.getElementById("noResults");
 
       // Initialize flatpickr for date selection
       flatpickr(dueDateInput, {
@@ -635,6 +656,14 @@
             progressFill.classList.remove("pulse-animation");
             mobileProgressFill.classList.remove("pulse-animation");
           }, 500);
+        }
+
+        // If user has a search query active, re-run filter so UI stays consistent
+        if (searchInput && searchInput.value.trim() !== "") {
+          runSearchFilter(searchInput.value.trim());
+        } else {
+          // when no search text, ensure no-results hidden
+          if (noResults) noResults.classList.add("hidden");
         }
       }
 
@@ -796,6 +825,11 @@
         setTimeout(() => {
           li.classList.remove("task-enter");
         }, 300);
+
+        // If there's an active search query, re-run filter so new item respects it
+        if (searchInput && searchInput.value.trim() !== "") {
+          runSearchFilter(searchInput.value.trim());
+        }
       }
 
       // Function to toggle edit mode for a task
@@ -943,6 +977,62 @@
           handleAddTask();
         }
       });
+
+      // Live search/filter implementation (NEW)
+      function runSearchFilter(query) {
+        const q = String(query || "").trim().toLowerCase();
+        let visibleCount = 0;
+        // If no tasks at all, keep original emptyState logic (don't show noResults)
+        const totalTasks = taskList.children.length;
+
+        Array.from(taskList.children).forEach((li) => {
+          // search in task text, category, priority, due date
+          const taskTextEl = li.querySelector(".task-text");
+          const categoryEl = li.querySelector(".category-badge");
+          const priorityEl = li.querySelector(".priority-badge");
+          const dueEl = li.querySelector(".due-date");
+
+          const haystackParts = [];
+          if (taskTextEl) haystackParts.push(taskTextEl.textContent);
+          if (categoryEl) haystackParts.push(categoryEl.textContent);
+          if (priorityEl) haystackParts.push(priorityEl.textContent);
+          if (dueEl) haystackParts.push(dueEl.textContent);
+
+          const haystack = haystackParts.join(" ").toLowerCase();
+
+          const matches = q === "" || haystack.indexOf(q) !== -1;
+
+          if (matches) {
+            li.style.display = "";
+            visibleCount++;
+          } else {
+            li.style.display = "none";
+          }
+        });
+
+        // If there are zero tasks in list -> show original emptyState (unchanged)
+        if (totalTasks === 0) {
+          if (emptyState) emptyState.classList.remove("hidden");
+          if (noResults) noResults.classList.add("hidden");
+          return;
+        } else {
+          if (emptyState) emptyState.classList.add("hidden");
+        }
+
+        // If no visible tasks after filtering, show the "noResults" message
+        if (visibleCount === 0 && q !== "") {
+          if (noResults) noResults.classList.remove("hidden");
+        } else {
+          if (noResults) noResults.classList.add("hidden");
+        }
+      }
+
+      // Attach input listener
+      if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+          runSearchFilter(e.target.value);
+        });
+      }
 
       // Close theme dropdown when clicking outside
       document.addEventListener("click", function (event) {
