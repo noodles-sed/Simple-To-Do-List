@@ -693,7 +693,7 @@
         });
         // Store the array as a JSON string
         localStorage.setItem("todoListTasks", JSON.stringify(tasks));
-        updateProgress();
+        reloadFromStorage();
       }
 
       // Function to create a new task item
@@ -951,12 +951,20 @@
         }
       }
 
-      // Function to load tasks from localStorage
+      // Function to load tasks from localStorage (sorted by due date)
       function loadTasks() {
-        // Get tasks from localStorage, or an empty array string if null
-        const savedTasks = JSON.parse(
-          localStorage.getItem("todoListTasks") || "[]"
-        );
+        // Read saved tasks array
+        const savedTasks = JSON.parse(localStorage.getItem("todoListTasks") || "[]");
+
+        // Sort: tasks with earlier dueDate come first. Tasks without a dueDate go to the end.
+        savedTasks.sort((a, b) => {
+          if (!a.dueDate && !b.dueDate) return 0;
+          if (!a.dueDate) return 1; // a goes after b
+          if (!b.dueDate) return -1; // a goes before b
+          return new Date(a.dueDate) - new Date(b.dueDate);
+        });
+
+        // Render sorted tasks
         savedTasks.forEach((task) => {
           createTask(
             task.text,
@@ -967,6 +975,18 @@
           );
         });
       }
+
+      // Helper: clear the UI and re-render tasks from localStorage (keeps order)
+      function reloadFromStorage() {
+        // Clear current DOM task list
+        taskList.innerHTML = "";
+        // Re-run loadTasks which will render sorted tasks
+        loadTasks();
+        // Update progress and UI counts after re-render
+        updateProgress();
+      }
+
+
 
       // Add event listener for the "Add" button click
       addTaskBtn.addEventListener("click", handleAddTask);
