@@ -413,7 +413,16 @@
               <option value="work">Work</option>
               <option value="shopping">Shopping</option>
               <option value="health">Health</option>
+              <option value="other">Other</option>
             </select>
+
+            <!-- custom category (hidden by default) -->
+            <input
+              type="text"
+              id="customCategoryInput"
+              class="w-full p-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task hidden"
+              placeholder="Type custom category..."
+            />
           </div>
 
           <div>
@@ -505,6 +514,21 @@
       const categorySelect = document.getElementById("categorySelect");
       const prioritySelect = document.getElementById("prioritySelect");
       const dueDateInput = document.getElementById("dueDateInput");
+
+      const customCategoryInput = document.getElementById("customCategoryInput");
+
+      // show/hide custom input when user selects "Other"
+      categorySelect.addEventListener("change", () => {
+        if (categorySelect.value === "other") {
+          customCategoryInput.classList.remove("hidden");
+          customCategoryInput.focus();
+        } else {
+          customCategoryInput.classList.add("hidden");
+          customCategoryInput.value = "";
+        }
+      });
+
+
       const themeToggle = document.getElementById("themeToggle");
       const themeDropdown = document.getElementById("themeDropdown");
       const progressFill = document.getElementById("progressFill");
@@ -929,10 +953,18 @@
         }
       }
 
-      // Function to handle adding a new task
       function handleAddTask() {
         const taskText = taskInput.value.trim();
-        const category = categorySelect.value;
+
+        // Check if user selected "Other" and entered custom category
+        let category;
+        if (categorySelect.value === "other") {
+          const customValue = customCategoryInput.value.trim();
+          category = customValue !== "" ? customValue : "Other";
+        } else {
+          category = categorySelect.value;
+        }
+
         const priority = prioritySelect.value;
         const dueDate = dueDateInput.value;
 
@@ -941,6 +973,7 @@
           saveTasks(); // Save after adding
           taskInput.value = ""; // Clear the input field
           dueDateInput.value = ""; // Clear the date field
+          if (categorySelect.value === "other") customCategoryInput.value = "";
           taskInput.focus(); // Set focus back to the input field
 
           // Add bounce animation to add button
@@ -950,6 +983,7 @@
           }, 600);
         }
       }
+
 
       // Function to load tasks from localStorage (sorted by due date)
       function loadTasks() {
