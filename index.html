@@ -291,16 +291,16 @@
         -webkit-backdrop-filter: blur(8px);
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
-      /* White text for all form elements */
-      input,
-      select,
+      /* Form elements styling */
+      input:not(.task-edit-input):not(.task-edit-category):not(.task-edit-priority):not(.task-edit-date),
+      select:not(.task-edit-category):not(.task-edit-priority),
       option,
       ::placeholder {
         color: white !important;
       }
 
       /* Better contrast for dropdown options */
-      select option {
+      select:not(.task-edit-category):not(.task-edit-priority) option {
         background: rgba(0, 0, 0, 0.8);
       }
 
@@ -365,75 +365,183 @@
     <div
       class="card glass rounded-lg shadow-xl w-full max-w-3xl mx-4 p-6 theme-transition"
     >
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-500">To-Do List</h1>
-        <div class="flex items-center gap-4">
-          <div class="hidden md:flex flex-col items-end">
-            <div class="text-sm text-gray-600">
-              <span id="completedCount">0</span> of
-              <span id="totalCount">0</span> tasks completed
-            </div>
-            <div class="w-32 progress-bar mt-1">
-              <div
-                id="progressFill"
-                class="progress-fill bg-blue-500"
-                style="width: 0%"
-              ></div>
-            </div>
-          </div>
-
-          <div class="relative">
+      <!-- Header -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h1 class="text-3xl font-bold text-gray-500">To-Do List</h1>
+          
+          <!-- Desktop Controls -->
+          <div class="hidden md:flex items-center gap-2">
+            <!-- Stats Toggle -->
             <button
-              id="themeToggle"
+              id="statsToggle"
               class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+              title="Show Statistics"
             >
-              <svg
-                class="w-5 h-5 text-gray-700"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
-                ></path>
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
               </svg>
             </button>
-            <div
-              id="themeDropdown"
-              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10"
+            
+            <!-- Export/Import Toggle -->
+            <button
+              id="exportToggle"
+              class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+              title="Export/Import Tasks"
             >
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+              </svg>
+            </button>
+            
+            <!-- Theme Toggle -->
+            <div class="relative">
               <button
-                data-theme="blue"
-                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                id="themeToggle"
+                class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+                title="Change Theme"
               >
-                <div class="w-4 h-4 rounded-full bg-blue-500 mr-3"></div>
-                Blue Theme
+                <svg
+                  class="w-5 h-5 text-gray-700"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
+                  ></path>
+                </svg>
               </button>
-              <button
-                data-theme="green"
-                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              <div
+                id="themeDropdown"
+                class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10"
               >
-                <div class="w-4 h-4 rounded-full bg-green-500 mr-3"></div>
-                Green Theme
-              </button>
-              <button
-                data-theme="purple"
-                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                <div class="w-4 h-4 rounded-full bg-purple-500 mr-3"></div>
-                Purple Theme
-              </button>
-              <button
-                data-theme="dark"
-                class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                <div class="w-4 h-4 rounded-full bg-gray-800 mr-3"></div>
-                Dark Theme
-              </button>
+                <button
+                  data-theme="blue"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-blue-500 mr-3"></div>
+                  Blue Theme
+                </button>
+                <button
+                  data-theme="green"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-green-500 mr-3"></div>
+                  Green Theme
+                </button>
+                <button
+                  data-theme="purple"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-purple-500 mr-3"></div>
+                  Purple Theme
+                </button>
+                <button
+                  data-theme="dark"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-gray-800 mr-3"></div>
+                  Dark Theme
+                </button>
+              </div>
             </div>
+          </div>
+          
+          <!-- Mobile Controls -->
+          <div class="md:hidden flex items-center gap-2">
+            <button
+              id="mobileStatsToggle"
+              class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+              title="Show Statistics"
+            >
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </button>
+            
+            <button
+              id="mobileExportToggle"
+              class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+              title="Export/Import Tasks"
+            >
+              <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+              </svg>
+            </button>
+            
+            <div class="relative">
+              <button
+                id="mobileThemeToggle"
+                class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
+                title="Change Theme"
+              >
+                <svg
+                  class="w-5 h-5 text-gray-700"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
+                  ></path>
+                </svg>
+              </button>
+              <div
+                id="mobileThemeDropdown"
+                class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10"
+              >
+                <button
+                  data-theme="blue"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-blue-500 mr-3"></div>
+                  Blue Theme
+                </button>
+                <button
+                  data-theme="green"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-green-500 mr-3"></div>
+                  Green Theme
+                </button>
+                <button
+                  data-theme="purple"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-purple-500 mr-3"></div>
+                  Purple Theme
+                </button>
+                <button
+                  data-theme="dark"
+                  class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <div class="w-4 h-4 rounded-full bg-gray-800 mr-3"></div>
+                  Dark Theme
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-600">
+            <span id="completedCount">0</span> of
+            <span id="totalCount">0</span> tasks completed
+          </div>
+          <div class="w-32 progress-bar">
+            <div
+              id="progressFill"
+              class="progress-fill bg-blue-500"
+              style="width: 0%"
+            ></div>
           </div>
         </div>
       </div>
@@ -467,16 +575,7 @@
               <option value="work">Work</option>
               <option value="shopping">Shopping</option>
               <option value="health">Health</option>
-              <option value="other">Other</option>
             </select>
-
-            <!-- custom category (hidden by default) -->
-            <input
-              type="text"
-              id="customCategoryInput"
-              class="w-full p-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition glass-task hidden"
-              placeholder="Type custom category..."
-            />
           </div>
 
           <div>
@@ -517,19 +616,6 @@
         />
       </div>
 
-      <div class="md:hidden mb-6">
-        <div class="flex justify-between items-center mb-2">
-          <span class="text-sm text-gray-600">Progress</span>
-          <span id="progressText" class="text-sm font-medium">0%</span>
-        </div>
-        <div class="w-full progress-bar">
-          <div
-            id="mobileProgressFill"
-            class="progress-fill bg-blue-500"
-            style="width: 0%"
-          ></div>
-        </div>
-      </div>
 
       <div>
         <ul id="taskList" class="space-y-3"></ul>
@@ -568,26 +654,9 @@
       const categorySelect = document.getElementById("categorySelect");
       const prioritySelect = document.getElementById("prioritySelect");
       const dueDateInput = document.getElementById("dueDateInput");
-
-      const customCategoryInput = document.getElementById("customCategoryInput");
-
-      // show/hide custom input when user selects "Other"
-      categorySelect.addEventListener("change", () => {
-        if (categorySelect.value === "other") {
-          customCategoryInput.classList.remove("hidden");
-          customCategoryInput.focus();
-        } else {
-          customCategoryInput.classList.add("hidden");
-          customCategoryInput.value = "";
-        }
-      });
-
-
       const themeToggle = document.getElementById("themeToggle");
       const themeDropdown = document.getElementById("themeDropdown");
       const progressFill = document.getElementById("progressFill");
-      const mobileProgressFill = document.getElementById("mobileProgressFill");
-      const progressText = document.getElementById("progressText");
       const completedCount = document.getElementById("completedCount");
       const totalCount = document.getElementById("totalCount");
       const emptyState = document.getElementById("emptyState");
@@ -627,7 +696,8 @@
         option.addEventListener("click", function () {
           const theme = this.dataset.theme;
           applyTheme(theme);
-          themeDropdown.classList.add("hidden");
+          document.getElementById("themeDropdown").classList.add("hidden");
+          document.getElementById("mobileThemeDropdown").classList.add("hidden");
         });
       });
 
@@ -714,8 +784,6 @@
           totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         progressFill.style.width = `${progress}%`;
-        mobileProgressFill.style.width = `${progress}%`;
-        progressText.textContent = `${progress}%`;
         completedCount.textContent = completedTasks;
         totalCount.textContent = totalTasks;
 
@@ -729,10 +797,8 @@
         // Pulse animation when progress changes
         if (progress > 0) {
           progressFill.classList.add("pulse-animation");
-          mobileProgressFill.classList.add("pulse-animation");
           setTimeout(() => {
             progressFill.classList.remove("pulse-animation");
-            mobileProgressFill.classList.remove("pulse-animation");
           }, 500);
         }
 
@@ -771,7 +837,7 @@
         });
         // Store the array as a JSON string
         localStorage.setItem("todoListTasks", JSON.stringify(tasks));
-        reloadFromStorage();
+        updateProgress();
       }
 
       // Function to create a new task item
@@ -847,6 +913,7 @@
               taskSpan.classList.remove("pulse-animation");
             }, 500);
             saveTasks(); // Save after toggling
+            updateProgress(); // Update progress immediately
           }
         });
 
@@ -874,6 +941,7 @@
             if (li.parentNode) {
               taskList.removeChild(li);
               saveTasks(); // Save after deleting
+              updateProgress(); // Update progress immediately
             }
           }, 300);
         });
@@ -899,6 +967,9 @@
           li.classList.add("glass-task-dark");
         }
 
+        // Make the new task draggable
+        makeTaskDraggable(li);
+
         // Add bounce animation to new task
         setTimeout(() => {
           li.classList.remove("task-enter");
@@ -908,6 +979,9 @@
         if (searchInput && searchInput.value.trim() !== "") {
           runSearchFilter(searchInput.value.trim());
         }
+
+        // Update progress immediately after adding task
+        updateProgress();
       }
 
       // Function to toggle edit mode for a task
@@ -1007,27 +1081,35 @@
         }
       }
 
+      // Function to handle adding a new task
       function handleAddTask() {
         const taskText = taskInput.value.trim();
-
-        // Check if user selected "Other" and entered custom category
-        let category;
-        if (categorySelect.value === "other") {
-          const customValue = customCategoryInput.value.trim();
-          category = customValue !== "" ? customValue : "Other";
-        } else {
-          category = categorySelect.value;
-        }
-
+        const category = categorySelect.value;
         const priority = prioritySelect.value;
         const dueDate = dueDateInput.value;
 
         if (taskText !== "") {
           createTask(taskText, false, category, priority, dueDate);
           saveTasks(); // Save after adding
-          taskInput.value = ""; // Clear the input field
+          
+          // Clear all input fields
+          taskInput.value = ""; // Clear the task input field
           dueDateInput.value = ""; // Clear the date field
-          if (categorySelect.value === "other") customCategoryInput.value = "";
+          categorySelect.value = "personal"; // Reset category to default
+          prioritySelect.value = "medium"; // Reset priority to default
+          
+          // Clear search if active to show the new task
+          if (searchInput && searchInput.value.trim() !== "") {
+            searchInput.value = "";
+            runSearchFilter(""); // Show all tasks
+          }
+          
+          // Add visual feedback for cleared fields
+          taskInput.classList.add("pulse-animation");
+          setTimeout(() => {
+            taskInput.classList.remove("pulse-animation");
+          }, 500);
+          
           taskInput.focus(); // Set focus back to the input field
 
           // Add bounce animation to add button
@@ -1038,21 +1120,12 @@
         }
       }
 
-
-      // Function to load tasks from localStorage (sorted by due date)
+      // Function to load tasks from localStorage
       function loadTasks() {
-        // Read saved tasks array
-        const savedTasks = JSON.parse(localStorage.getItem("todoListTasks") || "[]");
-
-        // Sort: tasks with earlier dueDate come first. Tasks without a dueDate go to the end.
-        savedTasks.sort((a, b) => {
-          if (!a.dueDate && !b.dueDate) return 0;
-          if (!a.dueDate) return 1; // a goes after b
-          if (!b.dueDate) return -1; // a goes before b
-          return new Date(a.dueDate) - new Date(b.dueDate);
-        });
-
-        // Render sorted tasks
+        // Get tasks from localStorage, or an empty array string if null
+        const savedTasks = JSON.parse(
+          localStorage.getItem("todoListTasks") || "[]"
+        );
         savedTasks.forEach((task) => {
           createTask(
             task.text,
@@ -1063,18 +1136,6 @@
           );
         });
       }
-
-      // Helper: clear the UI and re-render tasks from localStorage (keeps order)
-      function reloadFromStorage() {
-        // Clear current DOM task list
-        taskList.innerHTML = "";
-        // Re-run loadTasks which will render sorted tasks
-        loadTasks();
-        // Update progress and UI counts after re-render
-        updateProgress();
-      }
-
-
 
       // Add event listener for the "Add" button click
       addTaskBtn.addEventListener("click", handleAddTask);
@@ -1142,14 +1203,494 @@
         });
       }
 
-      // Close theme dropdown when clicking outside
+      // Close theme dropdowns when clicking outside
       document.addEventListener("click", function (event) {
+        const themeToggle = document.getElementById("themeToggle");
+        const themeDropdown = document.getElementById("themeDropdown");
+        const mobileThemeToggle = document.getElementById("mobileThemeToggle");
+        const mobileThemeDropdown = document.getElementById("mobileThemeDropdown");
+        
         if (
           !themeToggle.contains(event.target) &&
           !themeDropdown.contains(event.target)
         ) {
           themeDropdown.classList.add("hidden");
         }
+        
+        if (
+          !mobileThemeToggle.contains(event.target) &&
+          !mobileThemeDropdown.contains(event.target)
+        ) {
+          mobileThemeDropdown.classList.add("hidden");
+        }
+      });
+
+      // ===== NEW AMAZING FEATURES =====
+
+      // Interactive Particle Background
+      function createParticles() {
+        const container = document.getElementById('particlesContainer');
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          
+          // Random size and position
+          const size = Math.random() * 4 + 2;
+          particle.style.width = size + 'px';
+          particle.style.height = size + 'px';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.top = Math.random() * 100 + '%';
+          
+          // Random color based on theme
+          const colors = currentTheme === 'dark' 
+            ? ['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.5)', 'rgba(255,255,255,0.2)']
+            : ['rgba(59,130,246,0.3)', 'rgba(16,185,129,0.3)', 'rgba(139,92,246,0.3)'];
+          particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          // Random animation delay
+          particle.style.animationDelay = Math.random() * 6 + 's';
+          
+          container.appendChild(particle);
+        }
+      }
+
+      // Mouse trail effect
+      let mouseTrailTimeout;
+      document.addEventListener('mousemove', function(e) {
+        clearTimeout(mouseTrailTimeout);
+        
+        const trail = document.createElement('div');
+        trail.className = 'mouse-particle';
+        trail.style.left = e.clientX + 'px';
+        trail.style.top = e.clientY + 'px';
+        
+        document.body.appendChild(trail);
+        
+        setTimeout(() => {
+          if (trail.parentNode) {
+            trail.parentNode.removeChild(trail);
+          }
+        }, 600);
+        
+        mouseTrailTimeout = setTimeout(() => {
+          // Clean up any remaining trails
+          document.querySelectorAll('.mouse-particle').forEach(t => {
+            if (t.parentNode) t.parentNode.removeChild(t);
+          });
+        }, 1000);
+      });
+
+      // Sound Effects (using Web Audio API)
+      function playSound(type) {
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          let frequency;
+          switch(type) {
+            case 'complete': frequency = 800; break;
+            case 'delete': frequency = 200; break;
+            case 'add': frequency = 600; break;
+            case 'theme': frequency = 400; break;
+            default: frequency = 500;
+          }
+          
+          oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
+          
+          // Visual sound wave effect
+          createSoundWave();
+        } catch (e) {
+          console.log('Audio not supported');
+        }
+      }
+
+      function createSoundWave() {
+        const wave = document.createElement('div');
+        wave.className = 'sound-wave';
+        document.body.appendChild(wave);
+        
+        setTimeout(() => {
+          if (wave.parentNode) {
+            wave.parentNode.removeChild(wave);
+          }
+        }, 500);
+      }
+
+      // Confetti Animation
+      function createConfetti() {
+        const colors = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
+        const confettiCount = 50;
+        
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 2 + 's';
+          
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => {
+            if (confetti.parentNode) {
+              confetti.parentNode.removeChild(confetti);
+            }
+          }, 5000);
+        }
+      }
+
+      // Achievement System
+      let achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+      let stats = JSON.parse(localStorage.getItem('userStats') || '{"completed": 0, "streak": 0}');
+
+      function checkAchievements() {
+        const totalTasks = taskList.children.length;
+        const completedTasks = document.querySelectorAll('.task-text.completed').length;
+        
+        const newAchievements = [];
+        
+        if (completedTasks >= 1 && !achievements.includes('first_task')) {
+          newAchievements.push({id: 'first_task', text: '🎉 First Task Completed!'});
+        }
+        if (completedTasks >= 10 && !achievements.includes('ten_tasks')) {
+          newAchievements.push({id: 'ten_tasks', text: '🔥 10 Tasks Completed!'});
+        }
+        if (completedTasks >= 50 && !achievements.includes('fifty_tasks')) {
+          newAchievements.push({id: 'fifty_tasks', text: '🏆 50 Tasks Completed!'});
+        }
+        if (totalTasks > 0 && completedTasks === totalTasks && !achievements.includes('all_done')) {
+          newAchievements.push({id: 'all_done', text: '🎊 All Tasks Completed!'});
+          createConfetti();
+        }
+        
+        newAchievements.forEach(achievement => {
+          achievements.push(achievement.id);
+          showAchievement(achievement.text);
+        });
+        
+        localStorage.setItem('achievements', JSON.stringify(achievements));
+      }
+
+      function showAchievement(text) {
+        const badge = document.getElementById('achievementBadge');
+        badge.textContent = text;
+        badge.classList.add('show');
+        
+        setTimeout(() => {
+          badge.classList.remove('show');
+        }, 3000);
+      }
+
+      // Statistics System
+      function updateStats() {
+        const completedTasks = document.querySelectorAll('.task-text.completed').length;
+        const totalTasks = taskList.children.length;
+        const productivityScore = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        stats.completed = completedTasks;
+        stats.productivityScore = productivityScore;
+        
+        // Update streak (simplified - increments daily)
+        const today = new Date().toDateString();
+        const lastActive = localStorage.getItem('lastActive');
+        if (lastActive !== today) {
+          if (completedTasks > 0) {
+            stats.streak++;
+          } else {
+            stats.streak = 0;
+          }
+          localStorage.setItem('lastActive', today);
+        }
+        
+        localStorage.setItem('userStats', JSON.stringify(stats));
+        
+        // Update UI
+        document.getElementById('statsCompleted').textContent = completedTasks;
+        document.getElementById('statsScore').textContent = productivityScore + '%';
+        document.getElementById('statsStreak').textContent = stats.streak + ' days';
+      }
+
+
+      // Drag and Drop
+      let draggedElement = null;
+
+      function makeTaskDraggable(li) {
+        li.draggable = true;
+        
+        li.addEventListener('dragstart', (e) => {
+          draggedElement = li;
+          li.classList.add('dragging');
+        });
+        
+        li.addEventListener('dragend', () => {
+          li.classList.remove('dragging');
+          draggedElement = null;
+        });
+        
+        li.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          li.classList.add('drag-over');
+        });
+        
+        li.addEventListener('dragleave', () => {
+          li.classList.remove('drag-over');
+        });
+        
+        li.addEventListener('drop', (e) => {
+          e.preventDefault();
+          li.classList.remove('drag-over');
+          
+          if (draggedElement && draggedElement !== li) {
+            const rect = li.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+            
+            if (e.clientY < midpoint) {
+              taskList.insertBefore(draggedElement, li);
+            } else {
+              taskList.insertBefore(draggedElement, li.nextSibling);
+            }
+            
+            saveTasks();
+          }
+        });
+      }
+
+      // Keyboard Shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          switch(e.key) {
+            case 'n':
+              e.preventDefault();
+              taskInput.focus();
+              break;
+            case 'f':
+              e.preventDefault();
+              searchInput.focus();
+              break;
+            case 's':
+              e.preventDefault();
+              toggleStats();
+              break;
+            case 'e':
+              e.preventDefault();
+              toggleExport();
+              break;
+          }
+        }
+        
+        if (e.key === '?') {
+          e.preventDefault();
+          toggleShortcutsHelp();
+        }
+      });
+
+      // Export/Import Functions
+      function exportTasks() {
+        const tasks = [];
+        taskList.querySelectorAll('li').forEach(li => {
+          const taskSpan = li.querySelector('.task-text');
+          const categoryBadge = li.querySelector('.category-badge');
+          const priorityBadge = li.querySelector('.priority-badge');
+          const dueDateSpan = li.querySelector('.due-date');
+          
+          if (taskSpan) {
+            tasks.push({
+              text: taskSpan.textContent,
+              completed: taskSpan.classList.contains('completed'),
+              category: categoryBadge ? categoryBadge.dataset.category : 'personal',
+              priority: priorityBadge ? priorityBadge.dataset.priority : 'medium',
+              dueDate: dueDateSpan ? dueDateSpan.textContent : ''
+            });
+          }
+        });
+        
+        const dataStr = JSON.stringify(tasks, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'todo-tasks.json';
+        link.click();
+        
+        URL.revokeObjectURL(url);
+      }
+
+      function importTasks() {
+        document.getElementById('importFile').click();
+      }
+
+      // Toggle Functions
+      function toggleStats() {
+        const panel = document.getElementById('statsPanel');
+        panel.classList.toggle('show');
+        updateStats();
+      }
+
+
+      function toggleExport() {
+        const panel = document.getElementById('exportPanel');
+        panel.classList.toggle('show');
+      }
+
+      function toggleShortcutsHelp() {
+        const help = document.getElementById('shortcutsHelp');
+        help.classList.toggle('show');
+      }
+
+      // Event Listeners for new features
+      document.getElementById('statsToggle').addEventListener('click', toggleStats);
+      document.getElementById('exportToggle').addEventListener('click', toggleExport);
+      
+      // Mobile control event listeners
+      document.getElementById('mobileStatsToggle').addEventListener('click', toggleStats);
+      document.getElementById('mobileExportToggle').addEventListener('click', toggleExport);
+      document.getElementById('mobileThemeToggle').addEventListener('click', function() {
+        document.getElementById('mobileThemeDropdown').classList.toggle('hidden');
+      });
+      document.getElementById('exportTasks').addEventListener('click', exportTasks);
+      document.getElementById('importTasks').addEventListener('click', importTasks);
+      document.getElementById('closeExportPanel').addEventListener('click', () => {
+        document.getElementById('exportPanel').classList.remove('show');
+      });
+
+      document.getElementById('importFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const tasks = JSON.parse(e.target.result);
+              taskList.innerHTML = '';
+              tasks.forEach(task => {
+                createTask(task.text, task.completed, task.category, task.priority, task.dueDate);
+              });
+              saveTasks();
+              showAchievement('📁 Tasks Imported Successfully!');
+            } catch (error) {
+              alert('Error importing tasks. Please check the file format.');
+            }
+          };
+          reader.readAsText(file);
+        }
+      });
+
+      // Enhanced task creation with drag and drop
+      const originalCreateTask = createTask;
+      createTask = function(...args) {
+        const result = originalCreateTask.apply(this, args);
+        return result;
+      };
+
+      // Enhanced progress update with achievements and stats
+      const originalUpdateProgress = updateProgress;
+      updateProgress = function() {
+        // Call the original function first
+        const totalTasks = taskList.children.length;
+        const completedTasks = document.querySelectorAll(
+          ".task-text.completed"
+        ).length;
+        const progress =
+          totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+        progressFill.style.width = `${progress}%`;
+        completedCount.textContent = completedTasks;
+        totalCount.textContent = totalTasks;
+
+        // Show/hide empty state
+        if (totalTasks === 0) {
+          emptyState.classList.remove("hidden");
+        } else {
+          emptyState.classList.add("hidden");
+        }
+
+        // Pulse animation when progress changes
+        if (progress > 0) {
+          progressFill.classList.add("pulse-animation");
+          setTimeout(() => {
+            progressFill.classList.remove("pulse-animation");
+          }, 500);
+        }
+
+        // If user has a search query active, re-run filter so UI stays consistent
+        if (searchInput && searchInput.value.trim() !== "") {
+          runSearchFilter(searchInput.value.trim());
+        } else {
+          // when no search text, ensure no-results hidden
+          if (noResults) noResults.classList.add("hidden");
+        }
+        
+        // Then call the new features
+        checkAchievements();
+        updateStats();
+      };
+
+      // Enhanced task completion with sound
+      const originalTaskClick = taskList.addEventListener;
+      taskList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('task-text')) {
+          const wasCompleted = e.target.classList.contains('completed');
+          setTimeout(() => {
+            const isCompleted = e.target.classList.contains('completed');
+            if (isCompleted && !wasCompleted) {
+              playSound('complete');
+            }
+          }, 100);
+        }
+      });
+
+      // Enhanced task deletion with sound
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.delete-btn')) {
+          playSound('delete');
+        }
+      });
+
+      // Enhanced theme change with sound
+      const originalApplyTheme = applyTheme;
+      applyTheme = function(theme) {
+        originalApplyTheme.apply(this, arguments);
+        playSound('theme');
+        // Update particles when theme changes
+        document.getElementById('particlesContainer').innerHTML = '';
+        createParticles();
+      };
+
+      // Enhanced add task with sound
+      const originalHandleAddTask = handleAddTask;
+      handleAddTask = function() {
+        const result = originalHandleAddTask.apply(this, arguments);
+        if (taskInput.value.trim() !== '') {
+          playSound('add');
+        }
+        return result;
+      };
+
+      // Initialize all new features
+      document.addEventListener('DOMContentLoaded', function() {
+        createParticles();
+        
+        // Make existing tasks draggable
+        taskList.querySelectorAll('li').forEach(makeTaskDraggable);
+        
+        // Show welcome achievement
+        setTimeout(() => {
+          if (achievements.length === 0) {
+            showAchievement('👋 Welcome to your Enhanced To-Do List!');
+          }
+        }, 1000);
       });
 
 
