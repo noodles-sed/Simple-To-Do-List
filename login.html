@@ -7,40 +7,60 @@
   <link rel="stylesheet" href="styles1.css" />
   <style>
     body {
-      margin-left: 33%;
       font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      background-image: url("background_img_2");
-      background-size: cover;
-      background-position: center;
-      height: 100vh;
-    }
-
-    .form-page {
-      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+      margin: 0; /* Remove default margin */
+    }
+
+    /* LIGHT MODE */
+    body.light-mode {
+      background-image: url("background_img_2");
+      background-size: cover;
+      background-position: center;
+      color: #000;
+    }
+
+    /* DARK MODE */
+    body.dark-mode {
+      background: #121212; /* dark background */
+      color: #e0e0e0;
     }
 
     .form-container {
       align-items: center;
-      background: white;
       padding: 30px;
       border-radius: 40px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       max-width: 350px;
       width: 100%;
       text-align: center;
-      position: relative;
-      top: 150px;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.light-mode .form-container {
+      background: white;
+      color: #000;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .form-container {
+      background: #1f1f1f;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     }
 
     .form-container h1 {
       color: #3b82f6;
       margin-bottom: 20px;
       font-size: 24px;
+    }
+
+    body.dark-mode .form-container h1 {
+      color: #60a5fa;
     }
 
     .form-container input,
@@ -50,6 +70,18 @@
       margin: 10px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
+      transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+    }
+
+    body.dark-mode .form-container input {
+      background: #2c2c2c;
+      border: 1px solid #555;
+      color: #fff;
+    }
+
+    body.dark-mode .form-container button {
+      background: #3b82f6;
+      color: #fff;
     }
 
     .form-container button {
@@ -61,7 +93,7 @@
     }
 
     .form-container button:hover {
-      background: #3b82f6;
+      background: #2563eb;
     }
 
     .form-container p {
@@ -76,44 +108,63 @@
     .form-container a:hover {
       text-decoration: underline;
     }
+
+    .toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #3b82f6;
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      background: #2563eb;
+    }
   </style>
 </head>
-<body>
-  <main>
-    <div class="form-page">
-      <div class="form-container">
-        <h1>Login to TO-DO-List</h1>
-        <form>
-          <input type="text" placeholder="Username" required />
-          <input type="password" placeholder="Password" required />
-          <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="signup.html">Signup</a></p>
-      </div>
-    </div>
-  </main>
+<body class="light-mode">
+  <button class="toggle-btn" id="toggleMode">Dark Mode</button>
+
+  <div class="form-container">
+    <h1>Login to TO-DO-List</h1>
+    <form>
+      <input type="text" placeholder="Username" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Signup</a></p>
+  </div>
+
+  <script>
+    // Login form logic
+    const form = document.querySelector("form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = form.querySelector('input[type="text"]').value.trim();
+      const password = form.querySelector('input[type="password"]').value.trim();
+      const savedUsername = localStorage.getItem("username");
+      const savedPassword = localStorage.getItem("password");
+      if (username === savedUsername && password === savedPassword) {
+        alert("Login successful!");
+        localStorage.setItem("isLoggedIn", "true");
+        window.location.href = "index.html";
+      } else {
+        alert("Invalid username or password!");
+      }
+    });
+
+    // Dark mode toggle logic
+    const toggleBtn = document.getElementById("toggleMode");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      document.body.classList.toggle("light-mode");
+      toggleBtn.textContent = document.body.classList.contains("dark-mode") ? "Light Mode" : "Dark Mode";
+    });
+  </script>
 </body>
-
-<script>
-  const form = document.querySelector("form");
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const username = form.querySelector('input[type="text"]').value.trim();
-    const password = form.querySelector('input[type="password"]').value.trim();
-
-    const savedUsername = localStorage.getItem("username");
-    const savedPassword = localStorage.getItem("password");
-
-    if (username === savedUsername && password === savedPassword) {
-      alert("Login successful!");
-      localStorage.setItem("isLoggedIn", "true");
-      window.location.href = "index.html"; // Redirect to homepage
-    } else {
-      alert("Invalid username or password!");
-    }
-  });
-</script>
-
 </html>
