@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>To-Do List — Enhanced</title>
     <link rel="icon" type="image/png" href="./assests/favicon.png" />
-    <!-- Tailwind CDN (keeps your utilities) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -226,6 +225,28 @@
       }
       .task-item:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(2,6,23,0.08) }
 
+      /* Task Editing Styles */
+      .task-item.editing {
+          background: rgba(255,255,255,0.95); /* Slightly brighter background when editing */
+          flex-direction: column; /* Stack elements when editing */
+          align-items: flex-start;
+          transform: none !important;
+      }
+      .glass-dark .task-item.editing {
+          background: rgba(255,255,255,0.05);
+      }
+      .task-item.editing > div:first-child { /* Hide the original text/badges container */
+          display: none;
+      }
+      .task-item .edit-form-container {
+          display: none; /* Initially hide the edit form */
+          width: 100%;
+      }
+      .task-item.editing .edit-form-container {
+          display: block; /* Show the edit form when editing */
+      }
+
+
       .task-text { font-weight: 600; color: #0b1220; }
       .task-text.completed { text-decoration: line-through; color: #8b9bb6; font-weight:500; opacity:0.85 }
 
@@ -356,12 +377,9 @@
   </head>
 
   <body class="theme-blue">
-    <!-- Animated background -->
     <div class="bg-animated" aria-hidden="true"></div>
-    <!-- Particles -->
     <div id="particlesContainer" aria-hidden="true"></div>
 
-    <!-- Header (fixed) -->
     <header>
       <div class="auth-buttons" style="display:flex; gap:8px;">
         <a href="login.html" class="btn btn-primary">Login</a>
@@ -369,10 +387,8 @@
       </div>
     </header>
 
-    <!-- Achievement badge -->
     <div id="achievementBadge" role="status" aria-live="polite"></div>
 
-    <!-- Stats panel -->
     <aside id="statsPanel" class="panel" aria-hidden="true">
       <h3 class="text-sm font-semibold mb-2">Statistics</h3>
       <div class="text-xs text-gray-600 mb-2">Completed: <strong id="statsCompleted">0</strong></div>
@@ -380,7 +396,6 @@
       <div class="text-xs text-gray-600">Streak: <strong id="statsStreak">0 days</strong></div>
     </aside>
 
-    <!-- Export panel -->
     <aside id="exportPanel" class="panel" aria-hidden="true" style="top: 200px;">
       <h3 class="text-sm font-semibold mb-2">Export / Import</h3>
       <div class="flex gap-2">
@@ -391,7 +406,6 @@
       <div class="text-xs text-gray-500 mt-3">You can export your tasks to a JSON file or import a previously saved list.</div>
     </aside>
 
-    <!-- Main card -->
     <main class="card glass" role="main" aria-labelledby="main-title">
       <div class="flex items-start justify-between mb-3">
         <div>
@@ -433,7 +447,6 @@
         </div>
       </div>
 
-      <!-- progress / counts -->
       <div class="flex items-center justify-between mb-4 gap-4">
         <div class="text-sm text-gray-600"><span id="completedCount">0</span> of <span id="totalCount">0</span> tasks completed</div>
         <div class="w-36">
@@ -443,7 +456,6 @@
         </div>
       </div>
 
-      <!-- Add form -->
       <section class="mb-4 space-y-4">
         <div class="flex gap-3 items-start">
           <input id="taskInput" type="text" placeholder="Add a new task..." aria-label="Task" />
@@ -477,12 +489,10 @@
         </div>
       </section>
 
-      <!-- search -->
       <div class="mb-4">
         <input id="searchInput" type="text" placeholder="Search tasks, category, priority or date..." aria-label="Search" />
       </div>
 
-      <!-- tasks -->
       <div>
         <ul id="taskList" aria-live="polite"></ul>
 
@@ -498,13 +508,10 @@
       </div>
     </main>
 
-    <!-- Floating Add button -->
     <button id="floatingAdd" class="fab" aria-label="Add Task (quick)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
 
-    <!-- Hidden export input provided earlier -->
-    <!-- scripts -->
     <script>
       /***************
        * Elements
@@ -608,11 +615,13 @@
       function saveTasks() {
         const tasks = [];
         taskList.querySelectorAll('li').forEach(li => {
-          const text = li.querySelector('.task-text')?.textContent || '';
-          const completed = li.querySelector('.task-text')?.classList.contains('completed') || false;
-          const category = li.querySelector('.category-badge')?.dataset.category || 'personal';
-          const priority = li.querySelector('.priority-badge')?.dataset.priority || 'medium';
-          const dueDate = li.querySelector('.due-date')?.textContent || '';
+          // **CORRECTED: Read from data attributes, which are updated during edit**
+          const text = li.dataset.text || li.querySelector('.task-text')?.textContent || '';
+          const completed = li.dataset.completed === 'true';
+          const category = li.dataset.category || 'personal';
+          const priority = li.dataset.priority || 'medium';
+          const dueDate = li.dataset.dueDate || '';
+          
           tasks.push({ text, completed, category, priority, dueDate });
         });
         localStorage.setItem('todoListTasks', JSON.stringify(tasks));
@@ -625,11 +634,18 @@
       function createTask(taskText, isCompleted=false, category='personal', priority='medium', dueDate='') {
         const li = document.createElement('li');
         li.className = 'task-item task-enter';
+        // **NEW: Store task data on the element for easy access/saving**
+        li.dataset.text = taskText;
+        li.dataset.completed = isCompleted;
+        li.dataset.category = category;
+        li.dataset.priority = priority;
+        li.dataset.dueDate = dueDate;
 
-        const content = document.createElement('div');
-        content.style.flex = '1';
-        content.style.display = 'flex';
-        content.style.flexDirection = 'column';
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'task-content-wrapper'; // New wrapper for content
+        contentWrapper.style.flex = '1';
+        contentWrapper.style.display = 'flex';
+        contentWrapper.style.flexDirection = 'column';
 
         const span = document.createElement('span');
         span.className = 'task-text';
@@ -659,19 +675,26 @@
           badges.appendChild(d);
         }
 
-        content.appendChild(span);
-        content.appendChild(badges);
+        contentWrapper.appendChild(span);
+        contentWrapper.appendChild(badges);
+
+        // **NEW: Edit Form Container (initially hidden)**
+        const editFormContainer = document.createElement('div');
+        editFormContainer.className = 'edit-form-container';
+        // Content will be added by toggleEditMode(li, true)
 
         // actions
         const actions = document.createElement('div');
+        actions.className = 'task-actions';
         actions.style.display = 'flex';
         actions.style.alignItems = 'center';
         actions.style.gap = '8px';
 
         const editBtn = document.createElement('button');
         editBtn.className = 'action-btn edit-btn';
-        editBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15.232 5.232l3.536 3.536M9 21h6" stroke="#0b1220" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        editBtn.innerHTML = '<svg class="edit-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15.232 5.232l3.536 3.536M9 21h6" stroke="#0b1220" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         editBtn.title = 'Edit';
+        // Pass 'li' to the toggleEditMode function on click
         editBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleEditMode(li); });
 
         const delBtn = document.createElement('button');
@@ -690,7 +713,10 @@
 
         // toggle complete on text click
         li.addEventListener('click', (e) => {
-          if (li.classList.contains('editing') || e.target.closest('button')) return;
+          // Prevent toggling if in editing mode or a button/input was clicked
+          if (li.classList.contains('editing') || e.target.closest('button, input, select')) return; 
+          
+          li.dataset.completed = li.dataset.completed === 'false' ? 'true' : 'false';
           span.classList.toggle('completed');
           span.classList.add('pulse-animation');
           setTimeout(()=>span.classList.remove('pulse-animation'), 450);
@@ -699,7 +725,8 @@
           if (span.classList.contains('completed')) playSound('complete');
         });
 
-        li.appendChild(content);
+        li.appendChild(contentWrapper);
+        li.appendChild(editFormContainer); // Add the hidden form container
         li.appendChild(actions);
 
         // drag & drop
@@ -718,86 +745,141 @@
       }
 
       /***************
-       * Toggle Edit Mode
+       * Toggle Edit Mode - REFINED LOGIC
        ***************/
       function toggleEditMode(li) {
-        li.classList.toggle('editing');
         const editing = li.classList.contains('editing');
-        const content = li.querySelector('div');
+        const actions = li.querySelector('.task-actions');
+        const editFormContainer = li.querySelector('.edit-form-container');
+        const editButton = li.querySelector('.edit-btn');
 
-        if (editing) {
-          const taskSpan = li.querySelector('.task-text');
-          const categoryBadge = li.querySelector('.category-badge');
-          const priorityBadge = li.querySelector('.priority-badge');
-          const dueDateSpan = li.querySelector('.due-date');
-
-          // build inputs
-          const textInput = document.createElement('input');
-          textInput.type = 'text';
-          textInput.value = taskSpan.textContent;
-          textInput.className = 'task-edit-input';
-          textInput.style.marginBottom = '8px';
-
-          const grid = document.createElement('div');
-          grid.style.display = 'grid';
-          grid.style.gridTemplateColumns = '1fr 1fr';
-          grid.style.gap = '8px';
-
-          const categoryEdit = categorySelect.cloneNode(true);
-          categoryEdit.value = categoryBadge?.dataset.category || 'personal';
-          const priorityEdit = prioritySelect.cloneNode(true);
-          priorityEdit.value = priorityBadge?.dataset.priority || 'medium';
-
-          const dateInput = document.createElement('input');
-          dateInput.type = 'text';
-          dateInput.value = dueDateSpan ? dueDateSpan.textContent : '';
+        if (!editing) {
+          // --- ENTER EDIT MODE ---
+          li.classList.add('editing');
+          
+          // Clear and build the edit form inside the container
+          editFormContainer.innerHTML = ''; 
+          editFormContainer.innerHTML = `
+              <div class="space-y-3 p-1 w-full">
+                  <input type="text" class="task-edit-input" value="${li.dataset.text}" placeholder="Task description" />
+                  <div class="grid grid-cols-3 gap-2 text-xs">
+                      <select class="task-edit-category" aria-label="Category">
+                          ${Array.from(categorySelect.options).map(opt => `<option value="${opt.value}" ${opt.value === li.dataset.category ? 'selected' : ''}>${opt.textContent}</option>`).join('')}
+                      </select>
+                      <select class="task-edit-priority" aria-label="Priority">
+                          ${Array.from(prioritySelect.options).map(opt => `<option value="${opt.value}" ${opt.value === li.dataset.priority ? 'selected' : ''}>${opt.textContent}</option>`).join('')}
+                      </select>
+                      <input type="text" class="task-edit-duedate" value="${li.dataset.dueDate}" placeholder="Due date"/>
+                  </div>
+                  <div class="flex justify-end gap-2 pt-2">
+                      <button class="btn btn-sm btn-cancel" style="background: #f1f5f9; color: #475569; padding:8px 16px;">Cancel</button>
+                      <button class="btn btn-sm btn-save btn-primary" style="padding:8px 16px;">Save</button>
+                  </div>
+              </div>
+          `;
+          
+          // Re-init flatpickr for the new date input
+          const dateInput = editFormContainer.querySelector('.task-edit-duedate');
           flatpickr(dateInput, { dateFormat: "Y-m-d", minDate: "today" });
+          
+          // Change the right-side buttons to Save/Cancel actions
+          actions.innerHTML = `
+              <button class="action-btn save-edit-btn" title="Save"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#3b82f6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button class="action-btn cancel-edit-btn" title="Cancel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          `;
+          
+          // Add event listeners for the new action buttons
+          li.querySelector('.save-edit-btn').addEventListener('click', () => saveEditMode(li));
+          li.querySelector('.cancel-edit-btn').addEventListener('click', () => toggleEditMode(li)); // Just toggle back
+          
+          // Add 'Enter' key listener to the text input for quick save
+          const textInput = editFormContainer.querySelector('.task-edit-input');
+          textInput.addEventListener('keydown', (e) => { 
+              if (e.key === 'Enter') { e.preventDefault(); saveEditMode(li); } 
+          });
 
-          grid.appendChild(categoryEdit);
-          grid.appendChild(priorityEdit);
-          grid.appendChild(dateInput);
+          textInput.focus();
 
-          // replace content
-          content.innerHTML = '';
-          content.appendChild(textInput);
-          content.appendChild(grid);
-
-          // change edit icon to save icon
-          const editBtn = li.querySelector('.edit-btn');
-          editBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0b1220" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         } else {
-          const textInput = li.querySelector('.task-edit-input');
-          const categoryEdit = li.querySelector('.task-edit-category') || li.querySelector('select');
-          const priorityEdit = li.querySelector('.task-edit-priority') || li.querySelector('select');
-          const dateInput = li.querySelector('input[type="text"]');
+          // --- EXIT EDIT MODE (via Cancel or after Save) ---
+          li.classList.remove('editing');
 
-          // validation
-          if (textInput && textInput.value.trim() === "") {
-            alert("Task text cannot be empty.");
-            li.classList.add('editing');
-            return;
-          }
+          // Re-populate original action buttons
+          actions.innerHTML = '';
+          actions.appendChild(editButton);
+          
+          const delBtn = document.createElement('button');
+          delBtn.className = 'action-btn delete-btn';
+          delBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6" stroke="#0b1220" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          delBtn.title = 'Delete';
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            li.classList.add('task-exit');
+            playSound('delete');
+            setTimeout(()=>{ if(li.parentNode) { li.parentNode.removeChild(li); saveTasks(); } }, 300);
+          });
+          actions.appendChild(delBtn);
 
-          // get updated values
-          const updated = {
-            text: textInput ? textInput.value.trim() : li.querySelector('.task-text').textContent,
-            category: categoryEdit ? categoryEdit.value : 'personal',
-            priority: priorityEdit ? priorityEdit.value : 'medium',
-            dueDate: dateInput ? dateInput.value : ''
-          };
-
-          // find index to preserve order
-          const index = Array.from(taskList.children).indexOf(li);
-          // remove old
-          taskList.removeChild(li);
-          // create new and insert
-          createTask(updated.text, li.querySelector('.task-text')?.classList.contains('completed') || false, updated.category, updated.priority, updated.dueDate);
-          const created = taskList.lastChild;
-          if (index < taskList.children.length - 1) {
-            taskList.insertBefore(created, taskList.children[index]);
-          }
-          saveTasks();
+          // Restore original task content wrapper (hidden by CSS in edit mode)
+          li.querySelector('.task-content-wrapper').style.display = 'flex';
+          
+          // Clear the form container
+          editFormContainer.innerHTML = '';
         }
+      }
+
+      /***************
+       * Save Edit Mode - NEW FUNCTION
+       ***************/
+      function saveEditMode(li) {
+          const textInput = li.querySelector('.task-edit-input');
+          const categoryEdit = li.querySelector('.task-edit-category');
+          const priorityEdit = li.querySelector('.task-edit-priority');
+          const dateInput = li.querySelector('.task-edit-duedate');
+
+          // Validation
+          const newText = textInput.value.trim();
+          if (newText === "") {
+              alert("Task text cannot be empty.");
+              return; 
+          }
+
+          // 1. UPDATE DATA ATTRIBUTES
+          li.dataset.text = newText;
+          li.dataset.category = categoryEdit.value;
+          li.dataset.priority = priorityEdit.value;
+          li.dataset.dueDate = dateInput.value;
+
+          // 2. REFRESH VISUALS
+          const span = li.querySelector('.task-text');
+          span.textContent = newText;
+          
+          const categoryBadge = li.querySelector('.category-badge');
+          categoryBadge.textContent = categoryEdit.value.charAt(0).toUpperCase() + categoryEdit.value.slice(1);
+          categoryBadge.className = `badge category-badge category-${categoryEdit.value}`;
+
+          const priorityBadge = li.querySelector('.priority-badge');
+          priorityBadge.textContent = priorityEdit.value.charAt(0).toUpperCase() + priorityEdit.value.slice(1);
+          priorityBadge.className = `badge priority-badge priority-${priorityEdit.value}`;
+          
+          // Due Date Badge handling (create or update)
+          let dueDateBadge = li.querySelector('.due-date');
+          if (dateInput.value) {
+              if (!dueDateBadge) {
+                  dueDateBadge = document.createElement('span');
+                  dueDateBadge.className = 'badge due-date';
+                  li.querySelector('.badges').appendChild(dueDateBadge);
+              }
+              dueDateBadge.textContent = dateInput.value;
+          } else if (dueDateBadge) {
+              dueDateBadge.remove();
+          }
+
+          // 3. EXIT MODE AND SAVE
+          toggleEditMode(li); // Exit editing mode
+          saveTasks(); // Persist changes
+          playSound('theme'); // Use a sound for success
+          showAchievement('✅ Task Updated!');
       }
 
       /***************
@@ -806,7 +888,11 @@
       function handleAddTask() {
         const text = taskInput.value.trim();
         if (!text) return;
-        createTask(text, false, categorySelect.value, prioritySelect.value, dueDateInput.value);
+        
+        // Pass the actual date string from flatpickr, not the input value
+        const dueDateValue = dueDateInput._flatpickr?.selectedDates[0] ? dueDateInput.value : '';
+
+        createTask(text, false, categorySelect.value, prioritySelect.value, dueDateValue);
         saveTasks();
         playSound('add');
 
@@ -863,11 +949,12 @@
         let visible=0;
         const total = taskList.children.length;
         Array.from(taskList.children).forEach(li=>{
+          // Use data attributes for filtering
           const hay = [
-            li.querySelector('.task-text')?.textContent || '',
-            li.querySelector('.category-badge')?.textContent || '',
-            li.querySelector('.priority-badge')?.textContent || '',
-            li.querySelector('.due-date')?.textContent || ''
+            li.dataset.text || '',
+            li.dataset.category || '',
+            li.dataset.priority || '',
+            li.dataset.dueDate || ''
           ].join(' ').toLowerCase();
           const match = q === '' || hay.indexOf(q) !== -1;
           li.style.display = match ? '' : 'none';
@@ -885,11 +972,11 @@
         const tasks = [];
         taskList.querySelectorAll('li').forEach(li=>{
           tasks.push({
-            text: li.querySelector('.task-text')?.textContent || '',
-            completed: li.querySelector('.task-text')?.classList.contains('completed') || false,
-            category: li.querySelector('.category-badge')?.dataset.category || 'personal',
-            priority: li.querySelector('.priority-badge')?.dataset.priority || 'medium',
-            dueDate: li.querySelector('.due-date')?.textContent || ''
+            text: li.dataset.text || '',
+            completed: li.dataset.completed === 'true',
+            category: li.dataset.category || 'personal',
+            priority: li.dataset.priority || 'medium',
+            dueDate: li.dataset.dueDate || ''
           });
         });
         const blob = new Blob([JSON.stringify(tasks, null, 2)], {type:'application/json'});
@@ -978,7 +1065,7 @@
           if (type === 'complete') freq = 880;
           if (type === 'delete') freq = 220;
           if (type === 'add') freq = 520;
-          if (type === 'theme') freq = 360;
+          if (type === 'theme') freq = 360; // Using 'theme' for general update sound
           o.type = 'sine';
           o.frequency.value = freq;
           g.gain.value = 0.06;
