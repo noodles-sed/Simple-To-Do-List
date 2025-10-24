@@ -44,3 +44,18 @@ A clean, responsive, and lightweight to-do list application built with **HTML**,
    ```bash
    git clone https://github.com/mangosain/Simple-To-Do-List.git
    ```
+2. Running with Docker:
+
+You can run this app anywhere using Docker.
+
+**Build Docker Image**
+```bash
+docker build -t todo-app .
+```
+**Run Container**
+```bash
+docker run -p 5000:5000 todo-app
+```
+Open your browser at http://localhost:5000 to see the app.
+
+**Note:** Make sure Docker is installed and running.
